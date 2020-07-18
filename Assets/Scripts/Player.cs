@@ -8,16 +8,25 @@ public class Player : MonoBehaviour
     [Header("Player Characteristics")]
     [SerializeField] float horizontalSpeed = 20f;
     [SerializeField] float jumpForce = 180f;
+    [Header("Others")]
+    [SerializeField] GameObject stairsStart;
+    [SerializeField] GameObject stairs;
     //private
     private Rigidbody2D rb;
     private bool isMining = false;
+    private bool isOnStairs = false;
+    private bool isClimbing = false;
 	private void Start()
 	{
         rb = GetComponent<Rigidbody2D>();
 	}
     void Update()
     {
-        if (!isMining)
+        if (!isMining && isOnStairs && isClimbing) {
+            rb.MovePosition(rb.position + Vector2.up * 4f * Time.deltaTime);
+            rb.velocity = Vector2.zero;
+        }
+        else if (!isMining)
         {
             // If player is jumping, horizontal speed 
             float xSpeed = rb.velocity.y == 0 ? horizontalSpeed : horizontalSpeed / 4f;
@@ -60,14 +69,26 @@ public class Player : MonoBehaviour
                 StartCoroutine("Mine");
             }
         }
+        // Climbe (C)
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            isClimbing = !isClimbing;
+            if (!isOnStairs && isClimbing)
+			{
+                isClimbing = false;
+			}
+            if (isMining == true)
+			{
+                isMining = false;
+                StopCoroutine("Mine");
+			}
+        }
     }
     IEnumerator Mine()
 	{
-        while(true) {
-            yield return new WaitForSeconds(2f);
-
+        if (!isOnStairs)
+        {
             Vector2 raycastOrigin = transform.position;
-            raycastOrigin.y -= 0.3f;
 
             RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up);
 
@@ -77,7 +98,32 @@ public class Player : MonoBehaviour
 
                 if (distance < 0.5f)
                 {
+                    Vector3 stairsPos = hit.collider.gameObject.transform.position;
+                    stairsPos.y += 0.64f;
+                    stairsPos.z = 1;
+
+                    Instantiate(stairsStart, stairsPos, Quaternion.identity);
+                }
+            }
+        }
+        while (true) {
+            yield return new WaitForSeconds(2f);
+
+            Vector2 raycastOrigin = transform.position;
+
+            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up);
+
+            if (hit.collider != null)
+            {
+                float distance = Mathf.Abs(hit.point.y - transform.position.y);
+
+                if (distance < 0.5f)
+                {
+                    Vector3 stairsPos = hit.collider.gameObject.transform.position;
+                    stairsPos.z = 1;
+
                     Destroy(hit.collider.gameObject);
+                    Instantiate(stairs, stairsPos, Quaternion.identity);
 
                     Debug.Log(hit.collider.name);
                     Debug.Log(distance);
@@ -85,4 +131,23 @@ public class Player : MonoBehaviour
             }
         }
     }
+	private void OnTriggerStay2D(Collider2D collision)
+	{
+		if (collision.tag == "stairs")
+		{
+            isOnStairs = true;
+		}
+        else if (collision.tag == "stairsStart" && !isMining && isOnStairs && isClimbing)
+        {
+            rb.MovePosition(rb.position + new Vector2(-0.64f, 0.64f));
+            isClimbing = false;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+	{
+		if (collision.tag == "stairs" && !isMining)
+		{
+            isOnStairs = false;
+        }
+	}
 }
