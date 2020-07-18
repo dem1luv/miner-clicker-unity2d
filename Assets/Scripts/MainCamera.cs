@@ -28,4 +28,18 @@ public class MainCamera : MonoBehaviour
 		}
 		transform.position = Vector3.MoveTowards(transform.position, target, moveTowardsSpeed * extraSpeed * Time.deltaTime);
 	}
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.tag == "blockCollider")
+		{
+			collision.GetComponent<BlockCollider>().blocks.SetActive(true);
+		}
+	}
+	private void OnTriggerExit2D(Collider2D collision)
+	{
+		if (collision.tag == "blockCollider")
+		{
+			collision.GetComponent<BlockCollider>().blocks.SetActive(false);
+		}
+	}
 }

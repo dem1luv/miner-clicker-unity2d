@@ -86,7 +86,9 @@ public class Player : MonoBehaviour
     }
     IEnumerator Mine()
 	{
-        while (rb.velocity != Vector2.zero) {}
+        while (rb.velocity != Vector2.zero) {
+            yield return new WaitForSeconds(1f);
+        }
         if (!isOnStairs)
         {
             Vector2 raycastOrigin = transform.position;
@@ -108,7 +110,7 @@ public class Player : MonoBehaviour
             }
         }
         while (true) {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(0.8f);
 
             Vector2 raycastOrigin = transform.position;
 
