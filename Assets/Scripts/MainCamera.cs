@@ -14,13 +14,13 @@ public class MainCamera : MonoBehaviour
 		target.z = -10;
 		float xDifference = Math.Abs(Math.Abs(transform.position.x) - Math.Abs(target.x));
 		float yDifference = Math.Abs(Math.Abs(transform.position.y) - Math.Abs(target.y));
-		if (yDifference > 3f || xDifference > 1f)
+		if (yDifference > 4.2f || xDifference > 2.3f)
 		{
-			extraSpeed = 10f;
+			extraSpeed = 6f;
 		}
-		else if (yDifference > 4.2f || xDifference > 2.3f)
+		else if (yDifference > 3f || xDifference > 1f)
 		{
-			extraSpeed = 100f;
+			extraSpeed = 4f;
 		}
 		else if (xDifference <= 0.2f && yDifference <= 0.12f)
 		{

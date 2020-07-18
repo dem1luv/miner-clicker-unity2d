@@ -86,6 +86,7 @@ public class Player : MonoBehaviour
     }
     IEnumerator Mine()
 	{
+        while (rb.velocity != Vector2.zero) {}
         if (!isOnStairs)
         {
             Vector2 raycastOrigin = transform.position;
