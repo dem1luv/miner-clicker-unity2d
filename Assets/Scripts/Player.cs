@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] float maxPower = 3f;
     [Header("UI")]
     [SerializeField] Text moneyText;
+    [SerializeField] Text depthText;
     [Header("Others")]
     [SerializeField] GameObject stairsStart;
     [SerializeField] GameObject stairs;
@@ -28,6 +29,16 @@ public class Player : MonoBehaviour
 	}
     void Update()
     {
+        int depth = 0;
+        if (transform.position.y < 0) {
+            float playerY = System.Math.Abs(transform.position.y);
+            playerY /= 0.64f;
+            playerY = (float)System.Math.Round(playerY, System.MidpointRounding.AwayFromZero);
+            playerY *= 0.64f;
+            playerY += 0.64f;
+            depth = (int)(playerY / 0.64f);
+        }
+        depthText.text = $"Depth: {depth}";
         if (!isMining && isOnStairs && isClimbing) {
             rb.MovePosition(rb.position + Vector2.up * 4f * Time.deltaTime);
             rb.velocity = Vector2.zero;
