@@ -17,8 +17,6 @@ public class Block : MonoBehaviour
 
 	private void Start()
 	{
-		strength = (float)System.Math.Round(Random.Range(minStrength, maxStrength), 1);
-		startStrength = strength;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		StartCoroutine("GenerateBlock");
 	}
@@ -47,6 +45,8 @@ public class Block : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 		}
 
+		strength = (float)System.Math.Round(Random.Range(SaveScript.blocks[blockIndex].minStrength, SaveScript.blocks[blockIndex].maxStrength), 1);
+		startStrength = strength;
 		money = SaveScript.blocks[blockIndex].money;
 		spriteRenderer.color = SaveScript.blocks[blockIndex].color;
 	}
