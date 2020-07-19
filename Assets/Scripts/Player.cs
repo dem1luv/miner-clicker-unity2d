@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     [Header("Player Characteristics")]
     [SerializeField] float horizontalSpeed = 20f;
     [SerializeField] float jumpForce = 180f;
+    [SerializeField] float minPower = 1f;
+    [SerializeField] float maxPower = 3f;
     [Header("Others")]
     [SerializeField] GameObject stairsStart;
     [SerializeField] GameObject stairs;
@@ -122,14 +124,17 @@ public class Player : MonoBehaviour
 
                 if (distance < 0.5f)
                 {
-                    Vector3 stairsPos = hit.collider.gameObject.transform.position;
-                    stairsPos.z = 1;
+                    Block blockComponent = hit.collider.GetComponent<Block>();
+                    float damage = (float)System.Math.Round(Random.Range(minPower, maxPower), 1);
+                    float strength = blockComponent.Hit(damage);
+                    if (strength <= 0)
+                    {
+                        Vector3 stairsPos = hit.collider.gameObject.transform.position;
+                        stairsPos.z = 1;
 
-                    Destroy(hit.collider.gameObject);
-                    Instantiate(stairs, stairsPos, Quaternion.identity);
-
-                    Debug.Log(hit.collider.name);
-                    Debug.Log(distance);
+                        Destroy(hit.collider.gameObject);
+                        Instantiate(stairs, stairsPos, Quaternion.identity);
+                    }
                 }
             }
         }
