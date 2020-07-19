@@ -15,12 +15,12 @@ public class GameManager : MonoBehaviour
         GenerationBlock blockClay = new GenerationBlock(2, 6, 0.04f, 4f, 7f, 7, blockColors[0]);
         GenerationBlock blockCoal = new GenerationBlock(11, 500, 0.02f, 18f, 26f, 20, blockColors[1]);
         GenerationBlock blockDirt = new GenerationBlock(2, 2, 6, 8, 3f, 6f, 1, blockColors[2]);
-        GenerationBlock blockStone = new GenerationBlock(6, 11, 500, 560, 12f, 19f, 1, blockColors[3]);
+        GenerationBlock blockStone = new GenerationBlock(6, 11, 1899, 2060, 12f, 19f, 1, blockColors[3]);
         GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, 2f, 5f, 1, blockColors[4]);
         SaveScript.blocks = new GenerationBlock[] { blockClay, blockCoal, blockStone, blockGrass, blockDirt };
-		for (float y = 0; y >= -512f; y -= 10.24f)
+		for (float y = 0; y >= -2048f; y -= 10.24f)
 		{
-			for (float x = -64f; x <= 64f; x += 10.24f)
+			for (float x = -10.24f; x <= 0; x += 10.24f)
 			{
 				GameObject instBlock = Instantiate(blockCollider, new Vector3(x, y, 0), Quaternion.identity);
 			}
