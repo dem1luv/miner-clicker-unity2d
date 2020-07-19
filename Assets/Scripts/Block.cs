@@ -10,12 +10,45 @@ public class Block : MonoBehaviour
 	private float strength;
 	private SpriteRenderer spriteRenderer;
 
+	private int blockIndex = -1;
+
+	[SerializeField] int depth;
+
 	private void Start()
 	{
 		strength = (float)System.Math.Round(Random.Range(minStrength, maxStrength), 1);
 		startStrength = strength;
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		StartCoroutine("GenerateBlock");
 	}
+
+	IEnumerator GenerateBlock()
+	{
+		float y = System.Math.Abs(transform.position.y) + 0.64f;
+		depth = (int)(y / 0.64f);
+
+		while (blockIndex == -1)
+		{
+			for (int i = 0; i < SaveScript.blocks.Length; i++)
+			{
+				float chance = SaveScript.blocks[i].GetGenerationChance(depth);
+
+				if (chance >= Random.Range(0, 1f))
+				{
+					blockIndex = i;
+					break;
+				}
+			}
+			if (blockIndex > -1)
+			{
+				break;
+			}
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		spriteRenderer.color = SaveScript.blocks[blockIndex].color;
+	}
+
 	public float Hit(float damage)
 	{
 		strength -= damage;
