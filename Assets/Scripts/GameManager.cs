@@ -12,11 +12,11 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator GenerateWorld ()
 	{
-        GenerationBlock blockClay = new GenerationBlock(2, 6, 0.04f, blockColors[0]);
-        GenerationBlock blockCoal = new GenerationBlock(11, 500, 0.02f, blockColors[1]);
-        GenerationBlock blockDirt = new GenerationBlock(2, 2, 6, 8, blockColors[2]);
-        GenerationBlock blockStone = new GenerationBlock(6, 11, 500, 560, blockColors[3]);
-        GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, blockColors[4]);
+        GenerationBlock blockClay = new GenerationBlock(2, 6, 0.04f, 7, blockColors[0]);
+        GenerationBlock blockCoal = new GenerationBlock(11, 500, 0.02f, 20, blockColors[1]);
+        GenerationBlock blockDirt = new GenerationBlock(2, 2, 6, 8, 1, blockColors[2]);
+        GenerationBlock blockStone = new GenerationBlock(6, 11, 500, 560, 1, blockColors[3]);
+        GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, 1, blockColors[4]);
         SaveScript.blocks = new GenerationBlock[] { blockClay, blockCoal, blockStone, blockGrass, blockDirt };
 		for (float y = 0; y >= -512f; y -= 10.24f)
 		{
@@ -40,32 +40,36 @@ public class GenerationBlock
     private float topChanceCoof;
     private float bottomChanceCoof;
     private float chance;
-
+    
+    public int money;
     public Color color;
 
-    public GenerationBlock(int minDepth, int minGuaranteedDepth, int maxGuaranteedDepth, int maxDepth, Color color)
+    public GenerationBlock(int minDepth, int minGuaranteedDepth, int maxGuaranteedDepth, int maxDepth, int money, Color color)
     {
         this.minDepth = minDepth;
         this.minGuaranteedDepth = minGuaranteedDepth;
         this.maxGuaranteedDepth = maxGuaranteedDepth;
         this.maxDepth = maxDepth;
+        this.money = money;
         this.color = color;
         topChanceCoof = 1f / (minGuaranteedDepth - minDepth + 1);
         bottomChanceCoof = 1f / (maxDepth - maxGuaranteedDepth + 1);
     }
 
-    public GenerationBlock(int minDepth, int maxDepth, Color color)
+    public GenerationBlock(int minDepth, int maxDepth, int money, Color color)
     {
         this.minDepth = minDepth;
         this.maxDepth = maxDepth;
+        this.money = money;
         this.color = color;
         chance = 1f / (maxDepth - minDepth + 1);
     }
 
-    public GenerationBlock(int minDepth, int maxDepth, float chance, Color color)
+    public GenerationBlock(int minDepth, int maxDepth, float chance, int money, Color color)
     {
         this.minDepth = minDepth;
         this.maxDepth = maxDepth;
+        this.money = money;
         this.color = color;
         this.chance = chance;
     }

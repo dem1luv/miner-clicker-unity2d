@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class Player : MonoBehaviour
     [SerializeField] float jumpForce = 180f;
     [SerializeField] float minPower = 1f;
     [SerializeField] float maxPower = 3f;
+    [Header("UI")]
+    [SerializeField] Text moneyText;
     [Header("Others")]
     [SerializeField] GameObject stairsStart;
     [SerializeField] GameObject stairs;
@@ -138,6 +141,8 @@ public class Player : MonoBehaviour
                     {
                         Vector3 stairsPos = hit.collider.gameObject.transform.position;
                         stairsPos.z = 1;
+
+                        moneyText.text = (System.Convert.ToInt32(moneyText.text) + blockComponent.money).ToString();
 
                         Destroy(hit.collider.gameObject);
                         Instantiate(stairs, stairsPos, Quaternion.identity);

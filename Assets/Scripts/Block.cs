@@ -9,10 +9,11 @@ public class Block : MonoBehaviour
 	private float startStrength;
 	private float strength;
 	private SpriteRenderer spriteRenderer;
-
 	private int blockIndex = -1;
 
 	[SerializeField] int depth;
+
+	public int money;
 
 	private void Start()
 	{
@@ -46,6 +47,7 @@ public class Block : MonoBehaviour
 			yield return new WaitForSeconds(0.1f);
 		}
 
+		money = SaveScript.blocks[blockIndex].money;
 		spriteRenderer.color = SaveScript.blocks[blockIndex].color;
 	}
 
