@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private bool isMining = false;
     private bool isOnStairs = false;
+    private bool isOnStartStairs = false;
     private bool isClimbing = false;
 	private void Start()
 	{
@@ -91,7 +92,13 @@ public class Player : MonoBehaviour
         while (rb.velocity != Vector2.zero) {
             yield return new WaitForSeconds(1f);
         }
-        if (!isOnStairs)
+        Vector2 playerPos = transform.position;
+        playerPos.x /= 0.64f;
+        playerPos.x = (float)System.Math.Round(playerPos.x, System.MidpointRounding.AwayFromZero);
+        playerPos.x *= 0.64f;
+        transform.position = playerPos;
+        yield return new WaitForSeconds(0.8f);
+        if (!isOnStairs && !isOnStartStairs)
         {
             Vector2 raycastOrigin = transform.position;
 
@@ -145,10 +152,14 @@ public class Player : MonoBehaviour
 		{
             isOnStairs = true;
 		}
-        else if (collision.tag == "stairsStart" && !isMining && isOnStairs && isClimbing)
+        else if (collision.tag == "stairsStart")
         {
-            rb.MovePosition(rb.position + new Vector2(-0.64f, 0.64f));
-            isClimbing = false;
+            isOnStartStairs = true;
+            if (!isMining && isOnStairs && isClimbing)
+            {
+                rb.MovePosition(rb.position + new Vector2(-0.64f, 0.64f));
+                isClimbing = false;
+            }
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
@@ -157,5 +168,10 @@ public class Player : MonoBehaviour
 		{
             isOnStairs = false;
         }
-	}
+        else if (collision.tag == "stairsStart")
+		{
+            isOnStartStairs = false;
+        }
+
+    }
 }
