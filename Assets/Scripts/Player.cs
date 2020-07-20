@@ -111,6 +111,11 @@ public class Player : MonoBehaviour
         while (rb.velocity != Vector2.zero) {
             yield return new WaitForSeconds(1f);
         }
+        Vector2 playerPos = transform.position;
+        playerPos.x /= 0.64f;
+        playerPos.x = (float)System.Math.Round(playerPos.x, System.MidpointRounding.AwayFromZero);
+        playerPos.x *= 0.64f;
+        transform.position = playerPos;
         yield return new WaitForSeconds(miningDelay);
         if (!isOnStairs && !isOnStartStairs)
         {
