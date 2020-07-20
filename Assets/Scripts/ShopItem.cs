@@ -12,14 +12,17 @@ public class ShopItem : MonoBehaviour
     [SerializeField] Text price;
 
     [Header("Logic")]
-    public int type = 0;
-    public int priceCount;
+    [SerializeField] int type = 0;
+    [SerializeField] int priceCount;
+    [SerializeField] int increaseNum;
+    [SerializeField] int increaseIteration;
 
     [Header("Design")]
     [SerializeField] Color availableColor;
     [SerializeField] Color notAvailableColor;
 
     private Image imageComp;
+    private int lvl = 0;
 
 	private void Start()
 	{
@@ -56,24 +59,34 @@ public class ShopItem : MonoBehaviour
 
     private void Buy()
     {
+        lvl++;
+        if (lvl > 50)
+            increaseNum += increaseIteration * 6;
+        else if (lvl > 40)
+            increaseNum += increaseIteration * 5;
+        else if (lvl > 30)
+            increaseNum += increaseIteration * 4;
+        else if (lvl > 20)
+            increaseNum += increaseIteration * 3;
+        else if (lvl > 10)
+            increaseNum += increaseIteration * 2;
+        else if (lvl > 5)
+            increaseNum += increaseIteration;
+        priceCount += increaseNum;
         switch (type) {
             case 0:
-                Player.minPower *= 2;
-                Player.maxPower = Player.minPower * 2;
-                priceCount = (int)(priceCount * 2.6f);
+                Player.minPower += 1;
+                Player.maxPower += 2;
                 break;
             case 1:
-                Player.miningDelay /= 1.2f;
-                priceCount = (int)(priceCount * 2.8f);
+                Player.miningDelay -= 0.1f;
                 break;
             case 2:
-                Player.climbingSpeed *= 1.3f;
-                priceCount = (int)(priceCount * 2.25f);
+                Player.climbingSpeed += 0.7f;
                 break;
             case 3:
-                Player.minAutoPower *= 2;
-                Player.maxAutoPower = Player.minAutoPower * 2;
-                priceCount = (int)(priceCount * 2.6f);
+                Player.minAutoPower += 1;
+                Player.maxAutoPower += 2;
                 break;
         }
         RerenderUI();
