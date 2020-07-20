@@ -10,8 +10,9 @@ public class ShopItem : MonoBehaviour
     [SerializeField] Text title;
     [SerializeField] Text description;
     [SerializeField] Text price;
-    
+
     [Header("Logic")]
+    public int type = 0;
     public int priceCount;
 
     [Header("Design")]
@@ -34,20 +35,40 @@ public class ShopItem : MonoBehaviour
             imageComp.color = notAvailableColor;
     }
 
-	private void RerenderUI()
-	{
+    private void RerenderUI()
+    {
         price.text = priceCount.ToString();
-        description.text = $"Min Power - {Player.minPower}\nMax Power - {Player.maxPower}";
+        switch (type) {
+            case 0:
+                description.text = $"Min Mining Power - {Player.minPower * 2}\nMax Mining Power - {Player.minPower * 4}";
+                break;
+            case 1:
+                description.text = $"Mining Delay - {Player.miningDelay / 1.2f}s";
+                break;
+        }
+    }
+
+    private void Buy()
+    {
+        switch (type) {
+            case 0:
+                Player.minPower *= 2;
+                Player.maxPower = Player.minPower * 2;
+                priceCount = (int)(priceCount * 2.6f);
+                break;
+            case 1:
+                Player.miningDelay /= 1.2f;
+                priceCount = (int)(priceCount * 2.8f);
+                break;
+        }
+        RerenderUI();
     }
 
     public void OnBuyButton()
 	{
         if (GameManager.ChangeMoney(-priceCount))
 		{
-            Player.minPower *= 2;
-            Player.maxPower = Player.minPower * 2;
-            priceCount = (int)(priceCount * 2.6f);
-            RerenderUI();
+            Buy();
         }
     }
 }
