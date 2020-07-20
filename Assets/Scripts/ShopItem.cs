@@ -43,10 +43,13 @@ public class ShopItem : MonoBehaviour
                 description.text = $"Min Mining Power - {Player.minPower * 2}\nMax Mining Power - {Player.minPower * 4}";
                 break;
             case 1:
-                description.text = $"Mining Delay - {Player.miningDelay / 1.2f}s";
+                description.text = $"Automining Delay - {Player.miningDelay / 1.2f}s";
                 break;
             case 2:
                 description.text = $"Climbing Speed - {Player.climbingSpeed}";
+                break;
+            case 3:
+                description.text = $"Min Automining Power - {Player.minAutoPower * 2}\nMax Automining Power - {Player.minAutoPower * 4}";
                 break;
         }
     }
@@ -66,6 +69,11 @@ public class ShopItem : MonoBehaviour
             case 2:
                 Player.climbingSpeed *= 1.3f;
                 priceCount = (int)(priceCount * 2.25f);
+                break;
+            case 3:
+                Player.minAutoPower *= 2;
+                Player.maxAutoPower = Player.minAutoPower * 2;
+                priceCount = (int)(priceCount * 2.6f);
                 break;
         }
         RerenderUI();

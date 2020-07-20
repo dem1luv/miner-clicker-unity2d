@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     public static float climbingSpeed = 4f;
     public static float minPower = 1f;
     public static float maxPower = 3f;
+    public static float minAutoPower = 1f;
+    public static float maxAutoPower = 3f;
 
     [Header("UI")]
     [SerializeField] Text moneyText;
@@ -78,19 +80,23 @@ public class Player : MonoBehaviour
                 rb.AddForce(new Vector2(0, jumpForce));
             }
         }
+        if (Input.GetKeyDown(KeyCode.P))
+		{
+            StartCoroutine("Mine");
+        }
         // Mine (Space)
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isMining)
 			{
                 isMining = false;
-                StopCoroutine("Mine");
+                StopCoroutine("AutoMine");
             }
             else
 			{
                 isMining = true;
                 isClimbing = false;
-                StartCoroutine("Mine");
+                StartCoroutine("AutoMine");
             }
         }
         // Climbe (C)
@@ -104,13 +110,14 @@ public class Player : MonoBehaviour
             if (isMining == true)
 			{
                 isMining = false;
-                StopCoroutine("Mine");
+                StopCoroutine("AutoMine");
 			}
         }
     }
-    IEnumerator Mine()
+    IEnumerator AutoMine()
 	{
-        while (rb.velocity != Vector2.zero) {
+        while (rb.velocity != Vector2.zero)
+        {
             yield return new WaitForSeconds(miningDelay);
         }
         Vector2 playerPos = transform.position;
@@ -142,9 +149,44 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        while (true) {
+        while (true)
+        {
             yield return new WaitForSeconds(miningDelay);
 
+            Vector2 raycastOrigin = transform.position;
+
+            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up);
+
+            if (hit.collider != null)
+            {
+                float distance = Mathf.Abs(hit.point.y - transform.position.y);
+
+                if (distance < 0.5f)
+                {
+                    Block blockComponent = hit.collider.GetComponent<Block>();
+                    float damage = (float)System.Math.Round(Random.Range(minAutoPower, maxAutoPower), 1);
+                    float strength = blockComponent.Hit(damage);
+                    if (strength <= 0)
+                    {
+                        Vector3 stairsPos = hit.collider.gameObject.transform.position;
+
+                        transform.position = stairsPos;
+
+                        stairsPos.z = 1;
+
+                        GameManager.ChangeMoney(blockComponent.money);
+
+                        Destroy(hit.collider.gameObject);
+                        Instantiate(stairs, stairsPos, Quaternion.identity);
+                    }
+                }
+            }
+        }
+    }
+    IEnumerator Mine()
+	{
+        if (isMining & (isOnStairs || isOnStartStairs))
+        {
             Vector2 raycastOrigin = transform.position;
 
             RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up);
@@ -174,7 +216,9 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        yield return new WaitForEndOfFrame();
     }
+
 	private void OnTriggerStay2D(Collider2D collision)
 	{
 		if (collision.tag == "stairs")
