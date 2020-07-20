@@ -89,6 +89,7 @@ public class Player : MonoBehaviour
             else
 			{
                 isMining = true;
+                isClimbing = false;
                 StartCoroutine("Mine");
             }
         }
@@ -110,7 +111,7 @@ public class Player : MonoBehaviour
     IEnumerator Mine()
 	{
         while (rb.velocity != Vector2.zero) {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(miningDelay);
         }
         Vector2 playerPos = transform.position;
         playerPos.x /= 0.64f;
