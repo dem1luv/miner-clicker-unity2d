@@ -9,14 +9,19 @@ public class Player : MonoBehaviour
     [Header("Player Characteristics")]
     [SerializeField] float horizontalSpeed = 20f;
     [SerializeField] float jumpForce = 180f;
+
+    public static float miningDelay = 2.4f;
     public static float minPower = 1f;
     public static float maxPower = 3f;
+
     [Header("UI")]
     [SerializeField] Text moneyText;
     [SerializeField] Text depthText;
+
     [Header("Others")]
     [SerializeField] GameObject stairsStart;
     [SerializeField] GameObject stairs;
+
     //private
     private Rigidbody2D rb;
     private bool isMining = false;
@@ -106,7 +111,7 @@ public class Player : MonoBehaviour
         while (rb.velocity != Vector2.zero) {
             yield return new WaitForSeconds(1f);
         }
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(miningDelay);
         if (!isOnStairs && !isOnStartStairs)
         {
             Vector2 raycastOrigin = transform.position;
@@ -131,7 +136,7 @@ public class Player : MonoBehaviour
             }
         }
         while (true) {
-            yield return new WaitForSeconds(0.8f);
+            yield return new WaitForSeconds(miningDelay);
 
             Vector2 raycastOrigin = transform.position;
 
