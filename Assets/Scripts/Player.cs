@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [SerializeField] float jumpForce = 180f;
 
     public static float miningDelay = 2.4f;
+    public static float climbingSpeed = 4f;
     public static float minPower = 1f;
     public static float maxPower = 3f;
 
@@ -45,7 +46,7 @@ public class Player : MonoBehaviour
         }
         depthText.text = $"Depth: {depth}";
         if (!isMining && isOnStairs && isClimbing) {
-            rb.MovePosition(rb.position + Vector2.up * 4f * Time.deltaTime);
+            rb.MovePosition(rb.position + Vector2.up * climbingSpeed * Time.deltaTime);
             rb.velocity = Vector2.zero;
         }
         else if (!isMining)

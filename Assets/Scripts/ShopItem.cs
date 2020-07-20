@@ -45,6 +45,9 @@ public class ShopItem : MonoBehaviour
             case 1:
                 description.text = $"Mining Delay - {Player.miningDelay / 1.2f}s";
                 break;
+            case 2:
+                description.text = $"Climbing Speed - {Player.climbingSpeed}";
+                break;
         }
     }
 
@@ -59,6 +62,10 @@ public class ShopItem : MonoBehaviour
             case 1:
                 Player.miningDelay /= 1.2f;
                 priceCount = (int)(priceCount * 2.8f);
+                break;
+            case 2:
+                Player.climbingSpeed *= 1.3f;
+                priceCount = (int)(priceCount * 2.25f);
                 break;
         }
         RerenderUI();
