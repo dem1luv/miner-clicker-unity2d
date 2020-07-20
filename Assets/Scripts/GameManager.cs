@@ -1,15 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Blocks")]
     [SerializeField] GameObject blockCollider;
     [SerializeField] Color[] blockColors;
+    [Header("UI")]
+    [SerializeField] public Text moneyTextPublic;
+    public static Text moneyText;
     void Start()
     {
         StartCoroutine("GenerateWorld");
+        moneyText = moneyTextPublic;
     }
+
     IEnumerator GenerateWorld ()
 	{
         GenerationBlock blockClay = new GenerationBlock(2, 6, 0.04f, 4f, 7f, 7, blockColors[0]);
@@ -28,6 +35,20 @@ public class GameManager : MonoBehaviour
 		}
 		/*yield return new WaitForSeconds(0.1f);
         GameObject instBlock = Instantiate(blockCollider, new Vector3(0, 0, 0), Quaternion.identity);*/
+    }
+
+    public static bool ChangeMoney(int value)
+	{
+        if (SaveScript.money + value < 0)
+        {
+            return false;
+        }
+        else
+        {
+            SaveScript.money += value;
+            moneyText.text = SaveScript.money.ToString();
+            return true;
+        }
     }
 }
 

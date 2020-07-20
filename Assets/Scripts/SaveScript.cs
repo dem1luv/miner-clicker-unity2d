@@ -5,4 +5,5 @@ using UnityEngine;
 public class SaveScript : MonoBehaviour
 {
     public static GenerationBlock[] blocks;
+    public static int money = 0;
 }

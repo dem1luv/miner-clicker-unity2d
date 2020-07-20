@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    //[SerializeField]
+    //[SerializeField] & public
     [Header("Player Characteristics")]
     [SerializeField] float horizontalSpeed = 20f;
     [SerializeField] float jumpForce = 180f;
-    [SerializeField] float minPower = 1f;
-    [SerializeField] float maxPower = 3f;
+    public static float minPower = 1f;
+    public static float maxPower = 3f;
     [Header("UI")]
     [SerializeField] Text moneyText;
     [SerializeField] Text depthText;
@@ -106,11 +106,6 @@ public class Player : MonoBehaviour
         while (rb.velocity != Vector2.zero) {
             yield return new WaitForSeconds(1f);
         }
-        Vector2 playerPos = transform.position;
-        playerPos.x /= 0.64f;
-        playerPos.x = (float)System.Math.Round(playerPos.x, System.MidpointRounding.AwayFromZero);
-        playerPos.x *= 0.64f;
-        transform.position = playerPos;
         yield return new WaitForSeconds(0.8f);
         if (!isOnStairs && !isOnStartStairs)
         {
@@ -126,6 +121,9 @@ public class Player : MonoBehaviour
                 {
                     Vector3 stairsPos = hit.collider.gameObject.transform.position;
                     stairsPos.y += 0.64f;
+
+                    transform.position = stairsPos;
+
                     stairsPos.z = 1;
 
                     Instantiate(stairsStart, stairsPos, Quaternion.identity);
@@ -151,9 +149,12 @@ public class Player : MonoBehaviour
                     if (strength <= 0)
                     {
                         Vector3 stairsPos = hit.collider.gameObject.transform.position;
+
+                        transform.position = stairsPos;
+
                         stairsPos.z = 1;
 
-                        moneyText.text = (System.Convert.ToInt32(moneyText.text) + blockComponent.money).ToString();
+                        GameManager.ChangeMoney(blockComponent.money);
 
                         Destroy(hit.collider.gameObject);
                         Instantiate(stairs, stairsPos, Quaternion.identity);

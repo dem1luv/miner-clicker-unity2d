@@ -14,6 +14,23 @@ public class ShopItem : MonoBehaviour
 
 	private void Start()
 	{
-        price.text = priceCount.ToString();
+        RerenderUI();
 	}
+
+    private void RerenderUI()
+	{
+        price.text = priceCount.ToString();
+        description.text = $"Min Power - {Player.minPower}\nMax Power - {Player.maxPower}";
+    }
+
+    public void OnBuyButton()
+	{
+        if (GameManager.ChangeMoney(-priceCount))
+		{
+            Player.minPower *= 2;
+            Player.maxPower = Player.minPower * 2;
+            priceCount = (int)(priceCount * 2.6f);
+            RerenderUI();
+        }
+    }
 }
