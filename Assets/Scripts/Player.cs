@@ -120,14 +120,14 @@ public class Player : MonoBehaviour
 	{
         while (rb.velocity != Vector2.zero)
         {
-            yield return new WaitForSeconds(miningDelay);
+            yield return new WaitForSeconds(0.1f);
         }
         Vector2 playerPos = transform.position;
         playerPos.x /= 0.64f;
         playerPos.x = (float)System.Math.Round(playerPos.x, System.MidpointRounding.AwayFromZero);
         playerPos.x *= 0.64f;
         transform.position = playerPos;
-        yield return new WaitForSeconds(miningDelay);
+        yield return new WaitForSeconds(0.1f);
         if (!isOnStairs && !isOnStartStairs)
         {
             Vector2 raycastOrigin = transform.position;
