@@ -59,8 +59,10 @@ public class Player : MonoBehaviour
             // Limitation for velocity
             if (rb.velocity.x > 2f)
                 rb.velocity = new Vector2(2f, rb.velocity.y);
-            if (rb.velocity.x < -2f)
+            else if (rb.velocity.x < -2f)
                 rb.velocity = new Vector2(-2f, rb.velocity.y);
+            if (rb.velocity.y < -8f)
+                rb.velocity = new Vector2(rb.velocity.x, -8f);
 
             // Left Move (Left Arrow)
             if (Input.GetKey(KeyCode.LeftArrow))

@@ -7,7 +7,7 @@ public class MainCamera : MonoBehaviour
 {
 	[SerializeField] float moveTowardsSpeed = 2f;
 	[SerializeField] GameObject player;
-	private float extraSpeed = 1f;
+	private float extraSpeed = 1.2f;
 	private void Update()
 	{
 		Vector3 target = player.transform.position;
@@ -24,7 +24,7 @@ public class MainCamera : MonoBehaviour
 		}
 		else if (xDifference <= 0.2f && yDifference <= 0.12f)
 		{
-			extraSpeed = 1f;
+			extraSpeed = 1.2f;
 		}
 		transform.position = Vector3.MoveTowards(transform.position, target, moveTowardsSpeed * extraSpeed * Time.deltaTime);
 	}
