@@ -4,17 +4,10 @@ using UnityEngine;
 
 public static class Save
 {
-    public static bool SetVec3(string key, Vector3 value)
+    public static void SetVec3(string key, Vector3 value)
 	{
-		if (!PlayerPrefs.HasKey($"{key}-X"))
-		{
-			PlayerPrefs.SetFloat($"{key}-X", value.x);
-			PlayerPrefs.SetFloat($"{key}-Y", value.y);
-			PlayerPrefs.SetFloat($"{key}-Z", value.z);
-
-			return true;
-		}
-
-		return false;
+		PlayerPrefs.SetFloat($"{key}-X", value.x);
+		PlayerPrefs.SetFloat($"{key}-Y", value.y);
+		PlayerPrefs.SetFloat($"{key}-Z", value.z);
 	}
 }

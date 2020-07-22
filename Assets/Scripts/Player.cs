@@ -34,7 +34,18 @@ public class Player : MonoBehaviour
 	private void Start()
 	{
         rb = GetComponent<Rigidbody2D>();
-	}
+        transform.position = Load.GetVec3("player", transform.position);
+        if (PlayerPrefs.HasKey("isMining"))
+            isMining = PlayerPrefs.GetInt("isMining") == 1;
+        if (PlayerPrefs.HasKey("isClimbing"))
+            isClimbing = PlayerPrefs.GetInt("isClimbing") == 1;
+        if (isMining)
+        {
+            isMining = true;
+            isClimbing = false;
+            StartCoroutine("AutoMine");
+        }
+    }
     void Update()
     {
         int depth = 0;
@@ -247,6 +258,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+    
     private void OnTriggerExit2D(Collider2D collision)
 	{
 		if (collision.tag == "stairs" && !isMining)
@@ -258,5 +270,37 @@ public class Player : MonoBehaviour
             isOnStartStairs = false;
         }
 
+    }
+
+	private void OnApplicationPause(bool pause)
+	{
+        if (transform.position != new Vector3(0f, 2f, 0f))
+        {
+            Save.SetVec3("player", transform.position);
+            if (isMining)
+                PlayerPrefs.SetInt("isMining", 1);
+            else
+                PlayerPrefs.SetInt("isMining", 0);
+            if (isClimbing)
+                PlayerPrefs.SetInt("isClimbing", 1);
+            else
+                PlayerPrefs.SetInt("isClimbing", 0);
+        }
+    }
+
+	private void OnApplicationQuit()
+	{
+        if (transform.position != new Vector3(0f, 2f, 0f))
+        {
+            Save.SetVec3("player", transform.position);
+            if (isMining)
+                PlayerPrefs.SetInt("isMining", 1);
+            else
+                PlayerPrefs.SetInt("isMining", 0);
+            if (isClimbing)
+                PlayerPrefs.SetInt("isClimbing", 1);
+            else
+                PlayerPrefs.SetInt("isClimbing", 0);
+        }
     }
 }

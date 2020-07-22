@@ -8,6 +8,10 @@ public class MainCamera : MonoBehaviour
 	[SerializeField] float moveTowardsSpeed = 2f;
 	[SerializeField] GameObject player;
 	private float extraSpeed = 1.2f;
+	private void Start()
+	{
+		transform.position = Load.GetVec3("player", transform.position);
+	}
 	private void Update()
 	{
 		Vector3 target = player.transform.position;
