@@ -179,7 +179,7 @@ public class Player : MonoBehaviour
                         GameManager.ChangeMoney(blockComponent.money);
 
                         Destroy(hit.collider.gameObject);
-                        Instantiate(stairs, stairsPos, Quaternion.identity);
+                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.gameObject.transform.root);
                     }
                 }
             }
@@ -213,7 +213,7 @@ public class Player : MonoBehaviour
                         GameManager.ChangeMoney(blockComponent.money);
 
                         Destroy(hit.collider.gameObject);
-                        Instantiate(stairs, stairsPos, Quaternion.identity);
+                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.gameObject.transform.parent);
                     }
                 }
             }
