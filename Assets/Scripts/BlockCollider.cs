@@ -12,35 +12,26 @@ public class BlockCollider : MonoBehaviour
 	private int startStairsIter = 0;
 	private int stairsIter = 0;
 
-	public void ManualStart()
+	IEnumerator ManualStart()
 	{
 		name = $"chunk-{chunkId}";
 		for (int i = 0; i < 256; i++)
 		{
 			blocks.transform.GetChild(i).name = $"block-{chunkId}-{i}";
 		}
-		while (true)
+		while (PlayerPrefs.HasKey($"startStairs-{chunkId}-{startStairsIter}-X"))
 		{
-			if (PlayerPrefs.HasKey($"startStairs-{chunkId}-{startStairsIter}-X"))
-			{
-				Vector3 vector3 = Load.GetVec3($"startStairs-{chunkId}-{startStairsIter}");
-				Instantiate(startStairs, vector3, Quaternion.identity, blocks.transform);
-				startStairsIter++;
-			}
-			else
-				break;
+			Vector3 vector3 = Load.GetVec3($"startStairs-{chunkId}-{startStairsIter}");
+			Instantiate(startStairs, vector3, Quaternion.identity, blocks.transform);
+			startStairsIter++;
 		}
-		while (true)
+		while (PlayerPrefs.HasKey($"stairs-{chunkId}-{stairsIter}-X"))
 		{
-			if (PlayerPrefs.HasKey($"stairs-{chunkId}-{stairsIter}-X"))
-			{
-				Vector3 vector3 = Load.GetVec3($"stairs-{chunkId}-{stairsIter}");
-				Instantiate(stairs, vector3, Quaternion.identity, blocks.transform);
-				stairsIter++;
-			}
-			else
-				break;
+			Vector3 vector3 = Load.GetVec3($"stairs-{chunkId}-{stairsIter}");
+			Instantiate(stairs, vector3, Quaternion.identity, blocks.transform);
+			stairsIter++;
 		}
+		yield return new WaitForEndOfFrame();
 	}
 
 	public void SaveStartStairs(GameObject startStairs)

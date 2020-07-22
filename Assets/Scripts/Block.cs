@@ -19,9 +19,9 @@ public class Block : MonoBehaviour
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
 
-		StartCoroutine("GenerateBlock");
+		GenerateBlock();
 	}
-	IEnumerator GenerateBlock()
+	private void GenerateBlock()
 	{
 		if (PlayerPrefs.HasKey($"{name}-destroyed"))
 			Destroy(gameObject);
@@ -44,8 +44,6 @@ public class Block : MonoBehaviour
 						blockIndex = i;
 						break;
 					}
-
-					yield return new WaitForEndOfFrame();
 				}
 				if (blockIndex > -1)
 				{

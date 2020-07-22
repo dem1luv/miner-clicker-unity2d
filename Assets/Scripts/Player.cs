@@ -10,12 +10,12 @@ public class Player : MonoBehaviour
     [SerializeField] float horizontalSpeed = 20f;
     [SerializeField] float jumpForce = 180f;
 
-    public static float miningDelay = 2.4f;
+    public static float miningDelay = 0f;
     public static float climbingSpeed = 4f;
     public static float minPower = 1f;
     public static float maxPower = 3f;
-    public static float minAutoPower = 1f;
-    public static float maxAutoPower = 3f;
+    public static float minAutoPower = 1000f;
+    public static float maxAutoPower = 3000f;
 
     [Header("UI")]
     [SerializeField] Text moneyText;

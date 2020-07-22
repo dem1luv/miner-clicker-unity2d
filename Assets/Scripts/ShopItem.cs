@@ -12,7 +12,7 @@ public class ShopItem : MonoBehaviour
     [SerializeField] Text price;
 
     [Header("Logic")]
-    [SerializeField] int id = 0;
+    [SerializeField] int id;
     [SerializeField] int type = 0;
     [SerializeField] int priceCount;
     [SerializeField] int increaseNum;
@@ -28,8 +28,16 @@ public class ShopItem : MonoBehaviour
 	private void Start()
 	{
         imageComp = GetComponent<Image>();
+        if (PlayerPrefs.HasKey($"shopItem-{id}-lvl"))
+        {
+            int dataLvl = PlayerPrefs.GetInt($"shopItem-{id}-lvl");
+            for (int i = 0; i < dataLvl; i++)
+            {
+                Buy();
+            }
+        }
         RerenderUI();
-	}
+    }
 
 	private void Update()
 	{
@@ -90,6 +98,7 @@ public class ShopItem : MonoBehaviour
                 Player.maxAutoPower += 2;
                 break;
         }
+        SaveData();
         RerenderUI();
     }
 
@@ -99,5 +108,21 @@ public class ShopItem : MonoBehaviour
 		{
             Buy();
         }
+    }
+
+    private void SaveData()
+    {
+        if (lvl != 0)
+            PlayerPrefs.SetInt($"shopItem-{id}-lvl", lvl);
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        SaveData();
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveData();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine("GenerateWorld");
         moneyText = moneyTextPublic;
+        SaveScript.money = PlayerPrefs.GetInt("money");
+        ChangeMoney(0);
     }
 
     IEnumerator GenerateWorld ()
@@ -36,7 +39,7 @@ public class GameManager : MonoBehaviour
                 BlockCollider collider = instChunk.GetComponent<BlockCollider>();
                 collider.chunkId = chunkId;
                 chunkId++;
-                collider.ManualStart();
+                collider.StartCoroutine("ManualStart");
             }
 			yield return new WaitForEndOfFrame();
 		}
@@ -62,6 +65,7 @@ public class GameManager : MonoBehaviour
     public void OnDeleteAllData()
 	{
         PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
 
