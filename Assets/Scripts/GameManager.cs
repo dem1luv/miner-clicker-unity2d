@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
         {
             SaveScript.money += value;
             moneyText.text = SaveScript.money.ToString();
+            PlayerPrefs.SetInt("money", SaveScript.money);
             return true;
         }
     }

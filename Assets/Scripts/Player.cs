@@ -272,7 +272,7 @@ public class Player : MonoBehaviour
 
     }
 
-	private void OnApplicationPause(bool pause)
+    private void SaveData()
 	{
         if (transform.position != new Vector3(0f, 2f, 0f))
         {
@@ -285,22 +285,17 @@ public class Player : MonoBehaviour
                 PlayerPrefs.SetInt("isClimbing", 1);
             else
                 PlayerPrefs.SetInt("isClimbing", 0);
+            PlayerPrefs.SetInt("money", SaveScript.money);
         }
+    }
+
+	private void OnApplicationPause(bool pause)
+	{
+        SaveData();
     }
 
 	private void OnApplicationQuit()
 	{
-        if (transform.position != new Vector3(0f, 2f, 0f))
-        {
-            Save.SetVec3("player", transform.position);
-            if (isMining)
-                PlayerPrefs.SetInt("isMining", 1);
-            else
-                PlayerPrefs.SetInt("isMining", 0);
-            if (isClimbing)
-                PlayerPrefs.SetInt("isClimbing", 1);
-            else
-                PlayerPrefs.SetInt("isClimbing", 0);
-        }
+        SaveData();
     }
 }

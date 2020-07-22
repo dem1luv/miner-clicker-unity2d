@@ -12,6 +12,7 @@ public class ShopItem : MonoBehaviour
     [SerializeField] Text price;
 
     [Header("Logic")]
+    [SerializeField] int id = 0;
     [SerializeField] int type = 0;
     [SerializeField] int priceCount;
     [SerializeField] int increaseNum;
