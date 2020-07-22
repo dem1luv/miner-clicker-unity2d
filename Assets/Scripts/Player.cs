@@ -147,7 +147,7 @@ public class Player : MonoBehaviour
 
                     stairsPos.z = 1;
 
-                    Instantiate(stairsStart, stairsPos, Quaternion.identity);
+                    Instantiate(stairsStart, stairsPos, Quaternion.identity, hit.collider.transform.parent);
                 }
             }
         }
@@ -179,7 +179,7 @@ public class Player : MonoBehaviour
                         GameManager.ChangeMoney(blockComponent.money);
 
                         Destroy(hit.collider.gameObject);
-                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.gameObject.transform.root);
+                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
                     }
                 }
             }
@@ -213,7 +213,7 @@ public class Player : MonoBehaviour
                         GameManager.ChangeMoney(blockComponent.money);
 
                         Destroy(hit.collider.gameObject);
-                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.gameObject.transform.parent);
+                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
                     }
                 }
             }
