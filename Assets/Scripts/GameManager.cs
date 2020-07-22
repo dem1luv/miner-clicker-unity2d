@@ -31,15 +31,15 @@ public class GameManager : MonoBehaviour
         GenerationBlock blockStone = new GenerationBlock(6, 11, 20000, 20000, 30f, 50f, 1, blockColors[3]);
         GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, 8f, 15f, 1, blockColors[4]);
         SaveScript.blocks = new GenerationBlock[] { blockClay, blockCoal, blockStone, blockGrass, blockDirt };
-		for (float y = 0; y >= -2048f; y -= 10.24f)
+		for (float y = 0; y >= -2048f; y -= 2.56f)
 		{
-			for (float x = -10.24f; x <= 0; x += 10.24f)
+			for (float x = -10.24f; x <= 0; x += 2.56f)
 			{
 				GameObject instChunk = Instantiate(blockCollider, new Vector3(x, y, 0), Quaternion.identity);
                 BlockCollider collider = instChunk.GetComponent<BlockCollider>();
                 collider.chunkId = chunkId;
                 chunkId++;
-                collider.StartCoroutine("ManualStart");
+                collider.ManualStart();
             }
 			yield return new WaitForEndOfFrame();
 		}

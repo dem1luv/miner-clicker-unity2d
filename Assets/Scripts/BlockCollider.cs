@@ -12,12 +12,13 @@ public class BlockCollider : MonoBehaviour
 	private int startStairsIter = 0;
 	private int stairsIter = 0;
 
-	IEnumerator ManualStart()
+	public void ManualStart()
 	{
 		name = $"chunk-{chunkId}";
-		for (int i = 0; i < 256; i++)
+		for (int i = 0; i < blocks.transform.childCount; i++)
 		{
-			blocks.transform.GetChild(i).name = $"block-{chunkId}-{i}";
+			GameObject block = blocks.transform.GetChild(i).gameObject;
+			block.name = $"block-{chunkId}-{i}";
 		}
 		while (PlayerPrefs.HasKey($"startStairs-{chunkId}-{startStairsIter}-X"))
 		{
@@ -31,7 +32,6 @@ public class BlockCollider : MonoBehaviour
 			Instantiate(stairs, vector3, Quaternion.identity, blocks.transform);
 			stairsIter++;
 		}
-		yield return new WaitForEndOfFrame();
 	}
 
 	public void SaveStartStairs(GameObject startStairs)

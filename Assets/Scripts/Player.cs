@@ -10,12 +10,12 @@ public class Player : MonoBehaviour
     [SerializeField] float horizontalSpeed = 20f;
     [SerializeField] float jumpForce = 180f;
 
-    public static float miningDelay = 0f;
+    public static float miningDelay = 2.4f;
     public static float climbingSpeed = 4f;
     public static float minPower = 1f;
     public static float maxPower = 3f;
-    public static float minAutoPower = 1000f;
-    public static float maxAutoPower = 3000f;
+    public static float minAutoPower = 1f;
+    public static float maxAutoPower = 3f;
 
     [Header("UI")]
     [SerializeField] Text moneyText;
@@ -49,7 +49,8 @@ public class Player : MonoBehaviour
     void Update()
     {
         int depth = 0;
-        if (transform.position.y < 0) {
+        if (transform.position.y < 0)
+        {
             float playerY = System.Math.Abs(transform.position.y);
             playerY /= 0.64f;
             playerY = (float)System.Math.Round(playerY, System.MidpointRounding.AwayFromZero);
@@ -58,7 +59,8 @@ public class Player : MonoBehaviour
             depth = (int)(playerY / 0.64f);
         }
         depthText.text = $"Depth: {depth}";
-        if (!isMining && isOnStairs && isClimbing) {
+        if (!isMining && isOnStairs && isClimbing)
+        {
             rb.MovePosition(rb.position + Vector2.up * climbingSpeed * Time.deltaTime);
             rb.velocity = Vector2.zero;
         }
@@ -94,19 +96,19 @@ public class Player : MonoBehaviour
             }
         }
         if (Input.GetKeyDown(KeyCode.P))
-		{
+        {
             StartCoroutine("Mine");
         }
         // Mine (Space)
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isMining)
-			{
+            {
                 isMining = false;
                 StopCoroutine("AutoMine");
             }
             else
-			{
+            {
                 isMining = true;
                 isClimbing = false;
                 StartCoroutine("AutoMine");
@@ -117,14 +119,24 @@ public class Player : MonoBehaviour
         {
             isClimbing = !isClimbing;
             if (!isOnStairs && isClimbing)
-			{
+            {
                 isClimbing = false;
-			}
+            }
             if (isMining == true)
-			{
+            {
                 isMining = false;
                 StopCoroutine("AutoMine");
-			}
+            }
+        }
+        // Developer Mode
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            miningDelay = 1f;
+            climbingSpeed = 20f;
+            minPower = 2000f;
+            maxPower = 4000f;
+            minAutoPower = 2000f;
+            maxAutoPower = 4000f;
         }
     }
     IEnumerator AutoMine()

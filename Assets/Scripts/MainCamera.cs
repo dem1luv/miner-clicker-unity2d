@@ -8,7 +8,7 @@ public class MainCamera : MonoBehaviour
 	[SerializeField] float moveTowardsSpeed = 2f;
 	[SerializeField] GameObject player;
 	private float extraSpeed = 1.2f;
-	private void Start()
+	/*private void Start()
 	{
 		transform.position = Load.GetVec3("player", transform.position);
 	}
@@ -31,7 +31,7 @@ public class MainCamera : MonoBehaviour
 			extraSpeed = 1.2f;
 		}
 		transform.position = Vector3.MoveTowards(transform.position, target, moveTowardsSpeed * extraSpeed * Time.deltaTime);
-	}
+	}*/
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (collision.tag == "blockCollider")
