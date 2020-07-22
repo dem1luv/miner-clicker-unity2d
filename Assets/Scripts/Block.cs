@@ -18,42 +18,76 @@ public class Block : MonoBehaviour
 	private void Start()
 	{
 		spriteRenderer = GetComponent<SpriteRenderer>();
+
 		StartCoroutine("GenerateBlock");
 	}
-
 	IEnumerator GenerateBlock()
 	{
-		float y = System.Math.Abs(transform.position.y) + 0.64f;
-		depth = (int)(y / 0.64f);
+		if (PlayerPrefs.HasKey($"{name}-destroyed"))
+			Destroy(gameObject);
 
-		while (blockIndex == -1)
+		if (PlayerPrefs.HasKey($"{name}-blockIndex"))
+			blockIndex = PlayerPrefs.GetInt($"{name}-blockIndex");
+		else
 		{
-			for (int i = 0; i < SaveScript.blocks.Length; i++)
-			{
-				float chance = SaveScript.blocks[i].GetGenerationChance(depth);
+			float y = System.Math.Abs(transform.position.y) + 0.64f;
+			depth = (int)(y / 0.64f);
 
-				if (chance >= Random.Range(0, 1f))
+			while (blockIndex == -1)
+			{
+				for (int i = 0; i < SaveScript.blocks.Length; i++)
 				{
-					blockIndex = i;
+					float chance = SaveScript.blocks[i].GetGenerationChance(depth);
+
+					if (chance >= Random.Range(0, 1f))
+					{
+						blockIndex = i;
+						break;
+					}
+
+					yield return new WaitForEndOfFrame();
+				}
+				if (blockIndex > -1)
+				{
 					break;
 				}
 			}
-			if (blockIndex > -1)
-			{
-				break;
-			}
-			yield return new WaitForSeconds(0.1f);
+
+			PlayerPrefs.SetInt($"{name}-blockIndex", blockIndex);
 		}
 
-		strength = (float)System.Math.Round(Random.Range(SaveScript.blocks[blockIndex].minStrength, SaveScript.blocks[blockIndex].maxStrength), 1);
-		startStrength = strength;
+		if (PlayerPrefs.HasKey($"{name}-strength"))
+			strength = PlayerPrefs.GetFloat($"{name}-strength");
+		else
+		{
+			strength = (float)System.Math.Round(Random.Range(SaveScript.blocks[blockIndex].minStrength, SaveScript.blocks[blockIndex].maxStrength), 1);
+			PlayerPrefs.SetFloat($"{name}-strength", strength);
+		}
+
+		if (PlayerPrefs.HasKey($"{name}-startStrength"))
+			startStrength = PlayerPrefs.GetFloat($"{name}-startStrength");
+		else
+		{
+			startStrength = strength;
+			PlayerPrefs.SetFloat($"{name}-startStrength", startStrength);
+		}
+
 		money = SaveScript.blocks[blockIndex].money;
 		spriteRenderer.color = SaveScript.blocks[blockIndex].color;
+
+		Color spriteColor = spriteRenderer.color;
+		spriteColor.a = strength / startStrength;
+		if (spriteColor.a < 0)
+		{
+			spriteColor.a = 0;
+		}
+		spriteRenderer.color = spriteColor;
 	}
 
 	public float Hit(float damage)
 	{
 		strength -= damage;
+		PlayerPrefs.SetFloat($"{name}-strength", strength);
 		Color spriteColor = spriteRenderer.color;
 		spriteColor.a = strength / startStrength;
 		if (spriteColor.a < 0)

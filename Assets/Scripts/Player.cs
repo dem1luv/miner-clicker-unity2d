@@ -147,7 +147,9 @@ public class Player : MonoBehaviour
 
                     stairsPos.z = 1;
 
-                    Instantiate(stairsStart, stairsPos, Quaternion.identity, hit.collider.transform.parent);
+                    GameObject startStairsInst = Instantiate(stairsStart, stairsPos, Quaternion.identity, hit.collider.transform.parent);
+                    BlockCollider blockCollider = hit.collider.transform.parent.transform.parent.GetComponent<BlockCollider>();
+                    blockCollider.SaveStartStairs(startStairsInst);
                 }
             }
         }
@@ -171,15 +173,19 @@ public class Player : MonoBehaviour
                     if (strength <= 0)
                     {
                         Vector3 stairsPos = hit.collider.gameObject.transform.position;
-
                         transform.position = stairsPos;
-
                         stairsPos.z = 1;
 
                         GameManager.ChangeMoney(blockComponent.money);
 
-                        Destroy(hit.collider.gameObject);
-                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
+                        GameObject block = hit.collider.gameObject;
+
+                        PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
+                        Destroy(block);
+
+                        GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
+                        BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();
+                        blockCollider.SaveStairs(stairsInst);
                     }
                 }
             }
@@ -205,15 +211,19 @@ public class Player : MonoBehaviour
                     if (strength <= 0)
                     {
                         Vector3 stairsPos = hit.collider.gameObject.transform.position;
-
                         transform.position = stairsPos;
-
                         stairsPos.z = 1;
 
                         GameManager.ChangeMoney(blockComponent.money);
 
-                        Destroy(hit.collider.gameObject);
-                        Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
+                        GameObject block = hit.collider.gameObject;
+
+                        PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
+                        Destroy(block);
+
+                        GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
+                        BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();
+                        blockCollider.SaveStairs(stairsInst);
                     }
                 }
             }

@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] public Text moneyTextPublic;
     public static Text moneyText;
+
+    private int chunkId = 0;
+
     void Start()
     {
         StartCoroutine("GenerateWorld");
@@ -22,16 +25,20 @@ public class GameManager : MonoBehaviour
         GenerationBlock blockClay = new GenerationBlock(2, 6, 0.04f, 16f, 20f, 6, blockColors[0]);
         GenerationBlock blockCoal = new GenerationBlock(11, 500, 0.02f, 50f, 80f, 30, blockColors[1]);
         GenerationBlock blockDirt = new GenerationBlock(2, 2, 6, 8, 20f, 24f, 1, blockColors[2]);
-        GenerationBlock blockStone = new GenerationBlock(6, 11, 1899, 2060, 30f, 50f, 1, blockColors[3]);
+        GenerationBlock blockStone = new GenerationBlock(6, 11, 20000, 20000, 30f, 50f, 1, blockColors[3]);
         GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, 8f, 15f, 1, blockColors[4]);
         SaveScript.blocks = new GenerationBlock[] { blockClay, blockCoal, blockStone, blockGrass, blockDirt };
 		for (float y = 0; y >= -2048f; y -= 10.24f)
 		{
 			for (float x = -10.24f; x <= 0; x += 10.24f)
 			{
-				GameObject instBlock = Instantiate(blockCollider, new Vector3(x, y, 0), Quaternion.identity);
-			}
-			yield return new WaitForSeconds(0.1f);
+				GameObject instChunk = Instantiate(blockCollider, new Vector3(x, y, 0), Quaternion.identity);
+                BlockCollider collider = instChunk.GetComponent<BlockCollider>();
+                collider.chunkId = chunkId;
+                chunkId++;
+                collider.ManualStart();
+            }
+			yield return new WaitForEndOfFrame();
 		}
 		/*yield return new WaitForSeconds(0.1f);
         GameObject instBlock = Instantiate(blockCollider, new Vector3(0, 0, 0), Quaternion.identity);*/
@@ -49,6 +56,11 @@ public class GameManager : MonoBehaviour
             moneyText.text = SaveScript.money.ToString();
             return true;
         }
+    }
+
+    public void OnDeleteAllData()
+	{
+        PlayerPrefs.DeleteAll();
     }
 }
 

@@ -6,7 +6,6 @@ using System.IO;
 
 public static class SaveLoad
 {
-
     /*public static List<Game> savedGames = new List<Game>();
 
     //методы загрузки и сохранения статические, поэтому их можно вызвать откуда угодно
