@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    //[SerializeField] & public
+    //===========================
+    // [SerializeField] & public
+    //===========================
     [Header("Player Characteristics")]
     [SerializeField] float horizontalSpeed = 20f;
     [SerializeField] float jumpForce = 180f;
@@ -25,18 +27,32 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject stairsStart;
     [SerializeField] GameObject stairs;
 
-    //private
+    //=========
+    // private
+    //=========
     private Rigidbody2D rb;
+
+    // states
     private bool isMining = false;
     private bool isOnStairs = false;
     private bool isOnStartStairs = false;
     private bool isClimbing = false;
-	private void Start()
+	
+    private void Start()
 	{
         rb = GetComponent<Rigidbody2D>();
+        LoadData();
+    }
+    private void LoadData()
+	{
+        //position
         transform.position = Load.GetVec3("player", transform.position);
+
+        //isMining
         if (PlayerPrefs.HasKey("isMining"))
             isMining = PlayerPrefs.GetInt("isMining") == 1;
+
+        //isClimbing
         if (PlayerPrefs.HasKey("isClimbing"))
             isClimbing = PlayerPrefs.GetInt("isClimbing") == 1;
         if (isMining)
@@ -46,30 +62,25 @@ public class Player : MonoBehaviour
             StartCoroutine("AutoMine");
         }
     }
-    void Update()
+    private void Update()
     {
-        int depth = 0;
-        if (transform.position.y < 0)
-        {
-            float playerY = System.Math.Abs(transform.position.y);
-            playerY /= 0.64f;
-            playerY = (float)System.Math.Round(playerY, System.MidpointRounding.AwayFromZero);
-            playerY *= 0.64f;
-            playerY += 0.64f;
-            depth = (int)(playerY / 0.64f);
-        }
+        // get & set depth on UI panel
+        int depth = Utils.GetDepth(gameObject);
         depthText.text = $"Depth: {depth}";
+        
+        // if is climbing
         if (!isMining && isOnStairs && isClimbing)
         {
             rb.MovePosition(rb.position + Vector2.up * climbingSpeed * Time.deltaTime);
             rb.velocity = Vector2.zero;
         }
+        // if is not climbing
         else if (!isMining)
         {
-            // If player is jumping, horizontal speed 
+            // if player is jumping, horizontal speed will be reduced in 4 times
             float xSpeed = rb.velocity.y == 0 ? horizontalSpeed : horizontalSpeed / 4f;
 
-            // Limitation for velocity
+            // limit velocity
             if (rb.velocity.x > 2f)
                 rb.velocity = new Vector2(2f, rb.velocity.y);
             else if (rb.velocity.x < -2f)
@@ -77,29 +88,28 @@ public class Player : MonoBehaviour
             if (rb.velocity.y < -8f)
                 rb.velocity = new Vector2(rb.velocity.x, -8f);
 
-            // Left Move (Left Arrow)
+            // left move (Left Arrow)
             if (Input.GetKey(KeyCode.LeftArrow))
                 rb.AddForce(Vector2.left * xSpeed);
             if (Input.GetKeyUp(KeyCode.LeftArrow))
                 rb.velocity = new Vector2(0, rb.velocity.y);
 
-            // Right Move (Right Arrow)
+            // right move (Right Arrow)
             if (Input.GetKey(KeyCode.RightArrow))
                 rb.AddForce(Vector2.right * xSpeed);
             if (Input.GetKeyUp(KeyCode.RightArrow))
                 rb.velocity = new Vector2(0, rb.velocity.y);
 
-            // Jump (Up Arrow)
+            // jump (Up Arrow)
             if (Input.GetKeyDown(KeyCode.UpArrow) && rb.velocity.y == 0)
-            {
                 rb.AddForce(new Vector2(0, jumpForce));
-            }
         }
+        
+        // mine (Left Click)
         if (Input.GetKeyDown(KeyCode.P))
-        {
             StartCoroutine("Mine");
-        }
-        // Mine (Space)
+        
+        // automine (Space)
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isMining)
@@ -114,7 +124,8 @@ public class Player : MonoBehaviour
                 StartCoroutine("AutoMine");
             }
         }
-        // Climbe (C)
+        
+        // climbe (C)
         if (Input.GetKeyDown(KeyCode.C))
         {
             isClimbing = !isClimbing;
@@ -128,7 +139,8 @@ public class Player : MonoBehaviour
                 StopCoroutine("AutoMine");
             }
         }
-        // Developer Mode
+        
+        // developer mode (D)
         if (Input.GetKeyDown(KeyCode.D))
         {
             miningDelay = 1f;
@@ -139,128 +151,107 @@ public class Player : MonoBehaviour
             maxAutoPower = 4000f;
         }
     }
-    IEnumerator AutoMine()
+    private GameObject GetBlockUnderPlayer()
+    {
+        Vector2 raycastOrigin = transform.position;
+        RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up, 0.5f); // block's height is 0.5f
+
+        // if no block is under player
+        if (hit.collider == null)
+            return null;
+
+        return hit.collider.gameObject;
+    }
+    private void HitBlock(GameObject block)
 	{
-        while (rb.velocity != Vector2.zero)
+        Block blockComponent = block.GetComponent<Block>();
+        float damage = (float)System.Math.Round(Random.Range(minPower, maxPower), 1);
+        float strength = blockComponent.Hit(damage);
+
+        if (strength <= 0)
         {
-            yield return new WaitForSeconds(0.1f);
+            // calucate stairs position
+            Vector3 stairsPos = block.transform.position;
+            stairsPos.z = 1;
+
+            // calculate player position
+            Vector3 playerPos = block.transform.position;
+            playerPos.y -= 0.02f; // player's height is 0.46f, block's is 0.5f, (0.5f - 0.46f) / 2 = 0.02f
+
+            // update money (add money for block)
+            GameManager.UpdateMoney(blockComponent.money);
+
+            // destroy block
+            PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
+            Destroy(block);
+
+            // teleport player to new player position
+            transform.position = playerPos;
+
+            // create and save stairs
+            GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, block.transform.parent);
+            BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();
+            blockCollider.SaveStairs(stairsInst);
         }
+    }
+    private void AlignPlayerWithGrid()
+	{
         Vector2 playerPos = transform.position;
         playerPos.x /= 0.64f;
         playerPos.x = (float)System.Math.Round(playerPos.x, System.MidpointRounding.AwayFromZero);
         playerPos.x *= 0.64f;
         playerPos.y -= 0.02f;
         transform.position = playerPos;
-        yield return new WaitForSeconds(0.1f);
-        if (!isOnStairs && !isOnStartStairs)
-        {
-            Vector2 raycastOrigin = transform.position;
-
-            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up);
-
-            if (hit.collider != null)
-            {
-                float distance = Mathf.Abs(hit.point.y - transform.position.y);
-
-                if (distance < 0.5f)
-                {
-                    Vector3 stairsPos = hit.collider.gameObject.transform.position;
-                    stairsPos.y += 0.64f;
-
-                    transform.position = stairsPos;
-
-                    stairsPos.z = 1;
-
-                    GameObject startStairsInst = Instantiate(stairsStart, stairsPos, Quaternion.identity, hit.collider.transform.parent);
-                    BlockCollider blockCollider = hit.collider.transform.parent.transform.parent.GetComponent<BlockCollider>();
-                    blockCollider.SaveStartStairs(startStairsInst);
-                }
-            }
-        }
-        while (true)
-        {
-            yield return new WaitForSeconds(miningDelay);
-
-            Vector2 raycastOrigin = transform.position;
-
-            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up);
-
-            if (hit.collider != null)
-            {
-                float distance = Mathf.Abs(hit.point.y - transform.position.y);
-
-                if (distance < 0.5f)
-                {
-                    Block blockComponent = hit.collider.GetComponent<Block>();
-                    float damage = (float)System.Math.Round(Random.Range(minAutoPower, maxAutoPower), 1);
-                    float strength = blockComponent.Hit(damage);
-                    if (strength <= 0)
-                    {
-                        Vector3 stairsPos = hit.collider.gameObject.transform.position;
-                        playerPos = stairsPos;
-                        playerPos.y -= 0.02f;
-                        stairsPos.z = 1;
-                        
-                        GameManager.ChangeMoney(blockComponent.money);
-
-                        GameObject block = hit.collider.gameObject;
-
-                        PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
-                        Destroy(block);
-
-                        transform.position = playerPos;
-
-                        GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
-                        BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();
-                        blockCollider.SaveStairs(stairsInst);
-                    }
-                }
-            }
-        }
     }
     IEnumerator Mine()
-	{
+    {
+        // if player is mining
         if (isMining & (isOnStairs || isOnStartStairs))
         {
-            Vector2 raycastOrigin = transform.position;
-
-            RaycastHit2D hit = Physics2D.Raycast(raycastOrigin, -Vector2.up);
-
-            if (hit.collider != null)
-            {
-                float distance = Mathf.Abs(hit.point.y - transform.position.y);
-
-                if (distance < 0.5f)
-                {
-                    Block blockComponent = hit.collider.GetComponent<Block>();
-                    float damage = (float)System.Math.Round(Random.Range(minPower, maxPower), 1);
-                    float strength = blockComponent.Hit(damage);
-                    if (strength <= 0)
-                    {
-                        Vector3 stairsPos = hit.collider.gameObject.transform.position;
-                        Vector3 playerPos = stairsPos;
-                        playerPos.y -= 0.02f;
-                        stairsPos.z = 1;
-
-                        GameManager.ChangeMoney(blockComponent.money);
-
-                        GameObject block = hit.collider.gameObject;
-
-                        PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
-                        Destroy(block);
-
-                        transform.position = playerPos; 
-
-                        GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
-                        BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();
-                        blockCollider.SaveStairs(stairsInst);
-                    }
-                }
-            }
+            GameObject block = GetBlockUnderPlayer();
+            if (block != null)
+                HitBlock(block);
         }
         yield return new WaitForEndOfFrame();
     }
+    IEnumerator AutoMine()
+	{
+        // while player is not staying
+        while (rb.velocity != Vector2.zero)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
+        AlignPlayerWithGrid();
+        yield return new WaitForEndOfFrame();
 
+        // if player is not on stairs
+        if (!isOnStairs && !isOnStartStairs)
+        {
+            GameObject block = GetBlockUnderPlayer();
+
+            // calculate start stairs position
+            Vector3 stairsPos = block.transform.position;
+            stairsPos.y += 0.64f;
+            stairsPos.z = 1;
+
+            // get parents
+            GameObject blocks = block.transform.parent.gameObject; // Blocks is block's parent
+            GameObject chunk = blocks.transform.parent.gameObject; // chunk is Block's parent
+
+            // create and save start stairs
+            GameObject startStairsInst = Instantiate(stairsStart, stairsPos, Quaternion.identity, blocks.transform);
+            BlockCollider blockCollider = chunk.GetComponent<BlockCollider>();
+            blockCollider.SaveStartStairs(startStairsInst);
+        }
+
+        // automining cycle
+        while (true)
+        {
+            yield return new WaitForSeconds(miningDelay);
+            StartCoroutine("Mine");
+        }
+    }
 	private void OnTriggerStay2D(Collider2D collision)
 	{
 		if (collision.tag == "stairs")
@@ -277,7 +268,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-    
     private void OnTriggerExit2D(Collider2D collision)
 	{
 		if (collision.tag == "stairs" && !isMining)
@@ -290,7 +280,6 @@ public class Player : MonoBehaviour
         }
 
     }
-
     private void SaveData()
 	{
         if (transform.position != new Vector3(0f, 2f, 0f))
@@ -307,12 +296,10 @@ public class Player : MonoBehaviour
             PlayerPrefs.SetInt("money", SaveScript.money);
         }
     }
-
 	private void OnApplicationPause(bool pause)
 	{
         SaveData();
     }
-
 	private void OnApplicationQuit()
 	{
         SaveData();

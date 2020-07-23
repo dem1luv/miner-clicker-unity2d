@@ -104,7 +104,7 @@ public class ShopItem : MonoBehaviour
 
     public void OnBuyButton()
 	{
-        if (GameManager.ChangeMoney(-priceCount))
+        if (GameManager.UpdateMoney(-priceCount))
 		{
             Buy();
         }

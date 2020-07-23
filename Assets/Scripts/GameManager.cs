@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine("GenerateWorld");
         moneyText = moneyTextPublic;
         SaveScript.money = PlayerPrefs.GetInt("money");
-        ChangeMoney(0);
+        UpdateMoney(0);
     }
 
     IEnumerator GenerateWorld ()
@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
         GameObject instBlock = Instantiate(blockCollider, new Vector3(0, 0, 0), Quaternion.identity);*/
     }
 
-    public static bool ChangeMoney(int value)
+    public static bool UpdateMoney(int value)
 	{
         if (SaveScript.money + value < 0)
         {
