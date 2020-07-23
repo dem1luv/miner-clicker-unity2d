@@ -19,7 +19,6 @@ public static class Load
 
 		return defaultVal;
 	}
-	
 	public static Vector3 GetVec3(string key)
 	{
 		if (PlayerPrefs.HasKey($"{key}-X"))
