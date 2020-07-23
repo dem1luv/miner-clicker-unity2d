@@ -6,16 +6,13 @@ public static class Utils
 {
     public static int GetDepth(GameObject gameObj)
 	{
-        int depth = 0;
-        if (gameObj.transform.position.y < 0)
-        {
-            float posY = System.Math.Abs(gameObj.transform.position.y);
-            posY /= 0.64f;
-            posY = (float)System.Math.Round(posY, System.MidpointRounding.AwayFromZero);
-            posY *= 0.64f;
-            posY += 0.64f;
-            depth = (int)(posY / 0.64f);
-        }
+        float y = gameObj.transform.position.y;
+        if (y > 0)
+            return 0;
+
+        y = System.Math.Abs(y) + 0.64f;
+        int depth = (int)(y / 0.64f);
+
         return depth;
     }
 }

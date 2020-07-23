@@ -43,9 +43,11 @@ public class Chunk : MonoBehaviour
 	public void SaveStartStairs(GameObject startStairs)
 	{
 		Save.SetVec3($"startStairs-{chunkId}-{startStairsIter}", startStairs.transform.position);
+		startStairsIter++;
 	}
 	public void SaveStairs(GameObject stairs)
 	{
 		Save.SetVec3($"stairs-{chunkId}-{stairsIter}", stairs.transform.position);
+		stairsIter++;
 	}
 }

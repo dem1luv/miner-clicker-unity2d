@@ -7,13 +7,15 @@ public class Block : MonoBehaviour
 	private float startStrength;
 	private float strength;
 	private SpriteRenderer spriteRenderer;
-	private int blockIndex = -1;
-	private int depth;
+	[SerializeField] int blockIndex = -1;
+	[SerializeField] int depth;
 
 	public int money;
 
 	public void LoadBlock()
 	{
+		spriteRenderer = GetComponent<SpriteRenderer>();
+
 		if (PlayerPrefs.HasKey($"{name}-destroyed"))
 			Destroy(gameObject);
 
