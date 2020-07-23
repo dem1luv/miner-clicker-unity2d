@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
 			for (float x = -40.96f; x <= 40.96f; x += 2.56f)
 			{
 				GameObject instChunk = Instantiate(blockCollider, new Vector3(x, y, 0), Quaternion.identity);
-                BlockCollider collider = instChunk.GetComponent<BlockCollider>();
+                Chunk collider = instChunk.GetComponent<Chunk>();
                 collider.chunkId = chunkId;
                 chunkId++;
                 collider.ManualStart();

@@ -36,14 +36,14 @@ public class MainCamera : MonoBehaviour
 	{
 		if (collision.tag == "blockCollider")
 		{
-			collision.GetComponent<BlockCollider>().blocks.SetActive(true);
+			collision.GetComponent<Chunk>().blocks.SetActive(true);
 		}
 	}
 	private void OnTriggerExit2D(Collider2D collision)
 	{
 		if (collision.tag == "blockCollider")
 		{
-			collision.GetComponent<BlockCollider>().blocks.SetActive(false);
+			collision.GetComponent<Chunk>().blocks.SetActive(false);
 		}
 	}
 }

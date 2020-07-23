@@ -45,14 +45,14 @@ public class Player : MonoBehaviour
     }
     private void LoadData()
 	{
-        //position
+        // position
         transform.position = Load.GetVec3("player", transform.position);
 
-        //isMining
+        // isMining
         if (PlayerPrefs.HasKey("isMining"))
             isMining = PlayerPrefs.GetInt("isMining") == 1;
 
-        //isClimbing
+        // isClimbing
         if (PlayerPrefs.HasKey("isClimbing"))
             isClimbing = PlayerPrefs.GetInt("isClimbing") == 1;
         if (isMining)
@@ -189,7 +189,7 @@ public class Player : MonoBehaviour
 
             // create and save stairs
             GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, block.transform.parent);
-            BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();
+            Chunk blockCollider = block.transform.parent.transform.parent.GetComponent<Chunk>();
             blockCollider.SaveStairs(stairsInst);
         }
     }
@@ -240,7 +240,7 @@ public class Player : MonoBehaviour
 
             // create and save start stairs
             GameObject startStairsInst = Instantiate(stairsStart, stairsPos, Quaternion.identity, blocks.transform);
-            BlockCollider blockCollider = chunk.GetComponent<BlockCollider>();
+            Chunk blockCollider = chunk.GetComponent<Chunk>();
             blockCollider.SaveStartStairs(startStairsInst);
         }
 
