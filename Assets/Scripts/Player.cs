@@ -149,6 +149,7 @@ public class Player : MonoBehaviour
         playerPos.x /= 0.64f;
         playerPos.x = (float)System.Math.Round(playerPos.x, System.MidpointRounding.AwayFromZero);
         playerPos.x *= 0.64f;
+        playerPos.y -= 0.02f;
         transform.position = playerPos;
         yield return new WaitForSeconds(0.1f);
         if (!isOnStairs && !isOnStartStairs)
@@ -196,15 +197,18 @@ public class Player : MonoBehaviour
                     if (strength <= 0)
                     {
                         Vector3 stairsPos = hit.collider.gameObject.transform.position;
-                        transform.position = stairsPos;
+                        playerPos = stairsPos;
+                        playerPos.y -= 0.02f;
                         stairsPos.z = 1;
-
+                        
                         GameManager.ChangeMoney(blockComponent.money);
 
                         GameObject block = hit.collider.gameObject;
 
                         PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
                         Destroy(block);
+
+                        transform.position = playerPos;
 
                         GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
                         BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();
@@ -234,7 +238,8 @@ public class Player : MonoBehaviour
                     if (strength <= 0)
                     {
                         Vector3 stairsPos = hit.collider.gameObject.transform.position;
-                        transform.position = stairsPos;
+                        Vector3 playerPos = stairsPos;
+                        playerPos.y -= 0.02f;
                         stairsPos.z = 1;
 
                         GameManager.ChangeMoney(blockComponent.money);
@@ -243,6 +248,8 @@ public class Player : MonoBehaviour
 
                         PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
                         Destroy(block);
+
+                        transform.position = playerPos;
 
                         GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
                         BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();

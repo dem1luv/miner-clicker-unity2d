@@ -26,7 +26,7 @@ public class Blocks : MonoBehaviour
 				blockComp.blockIndex = PlayerPrefs.GetInt($"{blockComp.name}-blockIndex");
 			else
 			{
-				float y = System.Math.Abs(transform.position.y) + 0.64f;
+				float y = System.Math.Abs(block.transform.position.y) + 0.64f;
 				blockComp.depth = (int)(y / 0.64f);
 
 				while (blockComp.blockIndex == -1)
