@@ -249,7 +249,7 @@ public class Player : MonoBehaviour
                         PlayerPrefs.SetInt($"{block.name}-destroyed", 0);
                         Destroy(block);
 
-                        transform.position = playerPos;
+                        transform.position = playerPos; 
 
                         GameObject stairsInst = Instantiate(stairs, stairsPos, Quaternion.identity, hit.collider.transform.parent);
                         BlockCollider blockCollider = block.transform.parent.transform.parent.GetComponent<BlockCollider>();

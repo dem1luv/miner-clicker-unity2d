@@ -41,10 +41,6 @@ public class Blocks : MonoBehaviour
 							break;
 						}
 					}
-					if (blockComp.blockIndex > -1)
-					{
-						break;
-					}
 				}
 
 				PlayerPrefs.SetInt($"{blockComp.name}-blockIndex", blockComp.blockIndex);
