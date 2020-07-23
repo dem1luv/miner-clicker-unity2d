@@ -251,33 +251,27 @@ public class Player : MonoBehaviour
             StartCoroutine("Mine");
         }
     }
-	private void OnTriggerStay2D(Collider2D collision)
+    public void OnStairsStay()
 	{
-		if (collision.tag == "stairs")
-		{
-            isOnStairs = true;
-		}
-        else if (collision.tag == "stairsStart")
+        isOnStairs = true;
+    }
+    public void OnStairsExit()
+	{
+        if (!isMining)
+            isOnStairs = false;
+    }
+    public void OnStartStairsStay()
+    {
+        isOnStartStairs = true;
+        if (!isMining && isOnStairs && isClimbing)
         {
-            isOnStartStairs = true;
-            if (!isMining && isOnStairs && isClimbing)
-            {
-                rb.MovePosition(rb.position + new Vector2(-0.64f, 0.64f));
-                isClimbing = false;
-            }
+            rb.MovePosition(rb.position + new Vector2(-0.64f, 0.64f));
+            isClimbing = false;
         }
     }
-    private void OnTriggerExit2D(Collider2D collision)
-	{
-		if (collision.tag == "stairs" && !isMining)
-		{
-            isOnStairs = false;
-        }
-        else if (collision.tag == "stairsStart")
-		{
-            isOnStartStairs = false;
-        }
-
+    public void OnStartStairsExit()
+    {
+        isOnStartStairs = false;
     }
     private void SaveData()
 	{

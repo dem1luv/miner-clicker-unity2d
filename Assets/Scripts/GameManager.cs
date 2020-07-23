@@ -31,9 +31,9 @@ public class GameManager : MonoBehaviour
         GenerationBlock blockStone = new GenerationBlock(6, 11, 20000, 20000, 30f, 50f, 1, blockColors[3]);
         GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, 8f, 15f, 1, blockColors[4]);
         SaveScript.blocks = new GenerationBlock[] { blockClay, blockCoal, blockStone, blockGrass, blockDirt };
-		for (float y = 0; y >= -3072f; y -= 2.56f)
+		for (float y = 0; y >= -256f; y -= 2.56f)
 		{
-			for (float x = -20.48f; x <= 20.48f; x += 2.56f)
+			for (float x = -5.12f; x <= 5.12f; x += 2.56f)
 			{
 				GameObject instChunk = Instantiate(blockCollider, new Vector3(x, y, 0), Quaternion.identity);
                 Chunk collider = instChunk.GetComponent<Chunk>();
