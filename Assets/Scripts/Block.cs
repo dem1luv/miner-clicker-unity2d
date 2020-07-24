@@ -18,7 +18,7 @@ public class Block : MonoBehaviour
 		spriteRenderer = GetComponent<SpriteRenderer>();
 
 		if (PlayerPrefs.HasKey($"{name}-destroyed"))
-			Destroy(gameObject);
+			gameObject.SetActive(false);
 
 		if (PlayerPrefs.HasKey($"{name}-blockIndex"))
 			LoadData();
@@ -39,10 +39,10 @@ public class Block : MonoBehaviour
 
 		return strength;
 	}
-	public void DestroyBlock()
+	public void BreakBlock()
 	{
 		PlayerPrefs.SetInt($"{name}-destroyed", 0);
-		Destroy(gameObject);
+		gameObject.SetActive(false);
 	}
 	private void LoadData()
 	{

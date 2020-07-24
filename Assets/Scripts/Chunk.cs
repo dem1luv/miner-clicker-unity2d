@@ -62,24 +62,13 @@ public class Chunk : MonoBehaviour
 		// remove all stairs
 		RemoveStairs();
 
-		// remove all GameObjects in Blocks
-		for (int e = 0; e < blocks.transform.childCount; e++)
-			Destroy(blocks.transform.GetChild(e).gameObject);
-
-		// spawn and rename blocks
-		int i = 0;
-		for (float y = 0; y > -2.56f; y -= 0.64f)
+		// activate and rename blocks
+		for (int i = 0; i < 16; i++)
 		{
-			for (float x = 0; x < 2.56f; x += 0.64f)
-			{
-				Vector2 blockPos = blocks.transform.position;
-				blockPos.x += x;
-				blockPos.y += y;
-				GameObject blockObj = Instantiate(block, blockPos, Quaternion.identity, blocks.transform);
-				blockObj.name = $"block-{chunkId}-{i}";
-				blockObj.GetComponent<Block>().LoadBlock();
-				i++;
-			}
+			GameObject blockObj = blocks.transform.GetChild(i).gameObject;
+			blockObj.name = $"block-{chunkId}-{i}";
+			blockObj.SetActive(true);
+			blockObj.GetComponent<Block>().LoadBlock();
 		}
 
 		// spawn start stairs

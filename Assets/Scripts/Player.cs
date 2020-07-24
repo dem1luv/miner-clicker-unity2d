@@ -182,7 +182,7 @@ public class Player : MonoBehaviour
             GameManager.UpdateMoney(blockComponent.money);
 
             // destroy block
-            blockComponent.DestroyBlock();
+            blockComponent.BreakBlock();
 
             // teleport player to new player position
             transform.position = playerPos;
