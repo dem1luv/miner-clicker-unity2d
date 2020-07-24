@@ -17,8 +17,8 @@ public static class Utils
     }
     public static Vector3 GetPosInChunk(GameObject gameObj)
 	{
-        float x = RoundFloat(gameObj.transform.position.x, 0) / 2.56f;
-        float y = RoundFloat(gameObj.transform.position.y, 0) / 2.56f;
+        float x = RoundFloat(gameObj.transform.position.x / 2.56f, 2);
+        float y = RoundFloat(gameObj.transform.position.y / 2.56f, 2);
 
         return new Vector3(x, y, 0);
     }

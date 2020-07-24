@@ -15,11 +15,6 @@ public class Chunk : MonoBehaviour
 	private Vector3 posInChunk;
 	private List<GameObject> allStairs = new List<GameObject>();
 
-	private void Start()
-	{
-		UpdateChunk();
-		blocks.SetActive(false);
-	}
 	private void RemoveStairs()
 	{
 		foreach (GameObject obj in allStairs)
@@ -27,6 +22,11 @@ public class Chunk : MonoBehaviour
 		allStairs.Clear();
 		startStairsIter = 0;
 		stairsIter = 0;
+	}
+	public void LoadChunk()
+	{
+		UpdateChunk();
+		blocks.SetActive(false);
 	}
 	public void Move(GameObject camera)
 	{
