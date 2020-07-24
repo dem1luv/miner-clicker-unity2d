@@ -5,30 +5,89 @@ using UnityEngine;
 public class Chunk : MonoBehaviour
 {
 	public GameObject blocks;
+	public GameObject block;
 	public GameObject startStairs;
 	public GameObject stairs;
-	public int chunkId;
+	public string chunkId;
 
 	private int startStairsIter = 0;
 	private int stairsIter = 0;
+	private Vector3 posInChunk;
+	private List<GameObject> allStairs = new List<GameObject>();
 
-	public void ManualStart()
+	private void Start()
 	{
+		UpdateChunk();
+		blocks.SetActive(false);
+	}
+	private void RemoveStairs()
+	{
+		foreach (GameObject obj in allStairs)
+			Destroy(obj);
+		allStairs.Clear();
+		startStairsIter = 0;
+		stairsIter = 0;
+	}
+	public void Move(GameObject camera)
+	{
+		Vector3 difference = transform.position - camera.transform.position;
+		float x = difference.x;
+		float y = difference.y;
+		Vector3 direction;
+		if (-7f > x)
+			direction = Vector3.left * 2.56f * 4f;
+		else if (x > 5f)
+			direction = Vector3.right * 2.56f * 4f;
+		else if (y > 5f)
+			direction = Vector3.up * 2.56f * 6f;
+		else
+			direction = Vector3.down * 2.56f * 6f;
+		Vector3 newPos = transform.position - direction;
+		transform.position = Utils.RoundVector3(newPos);
+		UpdateChunk();
+	}
+	public void UpdateChunk()
+	{
+		// calculate and set chunk id
+		posInChunk = Utils.GetPosInChunk(gameObject);
+		chunkId = $"({posInChunk.x};{posInChunk.y})";
+
+		// return update function if depth > 0
+		if (posInChunk.y > 0)
+			return;
+
 		// rename self
 		name = $"chunk-{chunkId}";
-		
-		// rename blocks
-		for (int i = 0; i < blocks.transform.childCount; i++)
+
+		// remove all stairs
+		RemoveStairs();
+
+		// remove all GameObjects in Blocks
+		for (int e = 0; e < blocks.transform.childCount; e++)
+			Destroy(blocks.transform.GetChild(e).gameObject);
+
+		// spawn and rename blocks
+		int i = 0;
+		for (float y = 0; y > -2.56f; y -= 0.64f)
 		{
-			GameObject block = blocks.transform.GetChild(i).gameObject;
-			block.name = $"block-{chunkId}-{i}";
+			for (float x = 0; x < 2.56f; x += 0.64f)
+			{
+				Vector2 blockPos = blocks.transform.position;
+				blockPos.x += x;
+				blockPos.y += y;
+				GameObject blockObj = Instantiate(block, blockPos, Quaternion.identity, blocks.transform);
+				blockObj.name = $"block-{chunkId}-{i}";
+				blockObj.GetComponent<Block>().LoadBlock();
+				i++;
+			}
 		}
 
 		// spawn start stairs
 		while (PlayerPrefs.HasKey($"startStairs-{chunkId}-{startStairsIter}-X"))
 		{
 			Vector3 vector3 = Load.GetVec3($"startStairs-{chunkId}-{startStairsIter}");
-			Instantiate(startStairs, vector3, Quaternion.identity, blocks.transform);
+			GameObject startStairsInst = Instantiate(startStairs, vector3, Quaternion.identity, blocks.transform);
+			allStairs.Add(startStairsInst);
 			startStairsIter++;
 		}
 
@@ -36,18 +95,21 @@ public class Chunk : MonoBehaviour
 		while (PlayerPrefs.HasKey($"stairs-{chunkId}-{stairsIter}-X"))
 		{
 			Vector3 vector3 = Load.GetVec3($"stairs-{chunkId}-{stairsIter}");
-			Instantiate(stairs, vector3, Quaternion.identity, blocks.transform);
+			GameObject stairsInst = Instantiate(stairs, vector3, Quaternion.identity, blocks.transform);
+			allStairs.Add(stairsInst);
 			stairsIter++;
 		}
 	}
 	public void SaveStartStairs(GameObject startStairs)
 	{
 		Save.SetVec3($"startStairs-{chunkId}-{startStairsIter}", startStairs.transform.position);
+		allStairs.Add(startStairs);
 		startStairsIter++;
 	}
 	public void SaveStairs(GameObject stairs)
 	{
 		Save.SetVec3($"stairs-{chunkId}-{stairsIter}", stairs.transform.position);
+		allStairs.Add(stairs);
 		stairsIter++;
 	}
 }

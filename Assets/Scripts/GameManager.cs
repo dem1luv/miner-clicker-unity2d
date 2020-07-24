@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Blocks")]
-    [SerializeField] GameObject blockCollider;
+    [Header("Chunks")]
+    [SerializeField] GameObject chunks;
+    [SerializeField] GameObject chunk;
     [SerializeField] Color[] blockColors;
     [Header("UI")]
     [SerializeField] public Text moneyTextPublic;
@@ -15,38 +16,23 @@ public class GameManager : MonoBehaviour
 
     private int chunkId = 0;
 
-    void Start()
+    void Awake()
     {
-        StartCoroutine("GenerateWorld");
+        GenerateWorld();
         moneyText = moneyTextPublic;
         SaveScript.money = PlayerPrefs.GetInt("money");
         UpdateMoney(0);
     }
 
-    IEnumerator GenerateWorld ()
-	{
+    private void GenerateWorld()
+    {
         GenerationBlock blockClay = new GenerationBlock(2, 6, 0.04f, 16f, 20f, 6, blockColors[0]);
         GenerationBlock blockCoal = new GenerationBlock(11, 500, 0.02f, 50f, 80f, 30, blockColors[1]);
         GenerationBlock blockDirt = new GenerationBlock(2, 2, 6, 8, 20f, 24f, 1, blockColors[2]);
         GenerationBlock blockStone = new GenerationBlock(6, 11, 20000, 20000, 30f, 50f, 1, blockColors[3]);
         GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, 8f, 15f, 1, blockColors[4]);
         SaveScript.blocks = new GenerationBlock[] { blockClay, blockCoal, blockStone, blockGrass, blockDirt };
-		for (float y = 0; y >= -256f; y -= 2.56f)
-		{
-			for (float x = -5.12f; x <= 5.12f; x += 2.56f)
-			{
-				GameObject instChunk = Instantiate(blockCollider, new Vector3(x, y, 0), Quaternion.identity);
-                Chunk collider = instChunk.GetComponent<Chunk>();
-                collider.chunkId = chunkId;
-                chunkId++;
-                collider.ManualStart();
-            }
-			yield return new WaitForSeconds(0.04f);
-		}
-		/*yield return new WaitForSeconds(0.1f);
-        GameObject instBlock = Instantiate(blockCollider, new Vector3(0, 0, 0), Quaternion.identity);*/
     }
-
     public static bool UpdateMoney(int value)
 	{
         if (SaveScript.money + value < 0)
@@ -61,7 +47,6 @@ public class GameManager : MonoBehaviour
             return true;
         }
     }
-
     public void OnDeleteAllData()
 	{
         PlayerPrefs.DeleteAll();

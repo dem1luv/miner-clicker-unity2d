@@ -9,6 +9,7 @@ public class Block : MonoBehaviour
 	private SpriteRenderer spriteRenderer;
 	[SerializeField] int blockIndex = -1;
 	[SerializeField] int depth;
+	[SerializeField] Vector3 kas;
 
 	public int money;
 
@@ -52,7 +53,11 @@ public class Block : MonoBehaviour
 	private void GenerateData()
 	{
 		// blockIndex
+		blockIndex = -1;
 		depth = Utils.GetDepth(gameObject);
+		if (depth == 0)
+			blockIndex = 0;
+		kas = transform.position;
 		while (blockIndex == -1)
 		{
 			for (int i = 0; i < SaveScript.blocks.Length; i++)

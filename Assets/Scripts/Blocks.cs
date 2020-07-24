@@ -4,20 +4,12 @@ using UnityEngine;
 
 public class Blocks : MonoBehaviour
 {
-	private int lastBlock = 0;
-
-    void Start()
-    {
-		LoadBlocks();
-	}
-	private void LoadBlocks()
+	public void OnPlayerEnter()
 	{
-		for (; lastBlock < transform.childCount; lastBlock++)
-		{
-			GameObject block = transform.GetChild(lastBlock).gameObject;
-			block.SetActive(true);
-			Block blockComp = block.GetComponent<Block>();
-			blockComp.LoadBlock();
-		}
+		// hide blocks if depth > 0
+		if (transform.position.y > 0.1f)
+			gameObject.SetActive(false);
+		else
+			gameObject.SetActive(true);
 	}
 }

@@ -80,14 +80,6 @@ public class Player : MonoBehaviour
             // if player is jumping, horizontal speed will be reduced in 4 times
             float xSpeed = rb.velocity.y == 0 ? horizontalSpeed : horizontalSpeed / 4f;
 
-            // limit velocity
-            if (rb.velocity.x > 2f)
-                rb.velocity = new Vector2(2f, rb.velocity.y);
-            else if (rb.velocity.x < -2f)
-                rb.velocity = new Vector2(-2f, rb.velocity.y);
-            if (rb.velocity.y < -8f)
-                rb.velocity = new Vector2(rb.velocity.x, -8f);
-
             // left move (Left Arrow)
             if (Input.GetKey(KeyCode.LeftArrow))
                 rb.AddForce(Vector2.left * xSpeed);
@@ -104,7 +96,15 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.UpArrow) && rb.velocity.y == 0)
                 rb.AddForce(new Vector2(0, jumpForce));
         }
-        
+
+        // limit velocity
+        if (rb.velocity.x > 2f)
+            rb.velocity = new Vector2(2f, rb.velocity.y);
+        else if (rb.velocity.x < -2f)
+            rb.velocity = new Vector2(-2f, rb.velocity.y);
+        if (rb.velocity.y < -8f)
+            rb.velocity = new Vector2(rb.velocity.x, -8f);
+
         // mine (Left Click)
         if (Input.GetKeyDown(KeyCode.P))
             StartCoroutine("Mine");
