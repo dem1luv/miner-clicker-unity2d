@@ -37,7 +37,108 @@ public class Player : MonoBehaviour
     private bool isOnStairs = false;
     private bool isOnStartStairs = false;
     private bool isClimbing = false;
-	
+
+    private float xSpeed;
+
+    //=======================
+    // player move and doing
+    //=======================
+    // left move
+    public void OnDownLeft()
+	{
+        StartCoroutine("MoveLeft");
+    }
+    public void OnUpLeft()
+	{
+        StopCoroutine("MoveLeft");
+        rb.velocity = new Vector2(0, rb.velocity.y);
+    }
+    IEnumerator MoveLeft()
+	{
+        while (true)
+        {
+            rb.AddForce(Vector2.left * xSpeed);
+            yield return new WaitForEndOfFrame();
+        }
+	}
+    // right move
+    public void OnDownRight()
+	{
+        StartCoroutine("MoveRight");
+    }
+    public void OnUpRight()
+	{
+        StopCoroutine("MoveRight");
+        rb.velocity = new Vector2(0, rb.velocity.y);
+    }
+    IEnumerator MoveRight()
+	{
+        while (true)
+		{
+            rb.AddForce(Vector2.right * xSpeed);
+            yield return new WaitForEndOfFrame();
+        }
+	}
+    // jump
+    public void OnDownJump()
+	{
+        if (rb.velocity.y == 0 && !isMining && !isClimbing)
+            rb.AddForce(new Vector2(0, jumpForce));
+    }
+    // climb
+    public void OnDownClimb()
+    {
+        isClimbing = !isClimbing;
+        if (!isOnStairs && isClimbing)
+        {
+            isClimbing = false;
+        }
+        if (isMining == true)
+        {
+            isMining = false;
+            StopCoroutine("AutoMine");
+        }
+    }
+    // automine
+    public void OnDownAutomine()
+	{
+        if (isMining)
+        {
+            isMining = false;
+            StopCoroutine("AutoMine");
+        }
+        else
+        {
+            isMining = true;
+            isClimbing = false;
+            StartCoroutine("AutoMine");
+        }
+    }
+    //========
+    // stairs
+    //========
+    public void OnStairsStay()
+    {
+        isOnStairs = true;
+    }
+    public void OnStairsExit()
+    {
+        if (!isMining)
+            isOnStairs = false;
+    }
+    public void OnStartStairsStay()
+    {
+        isOnStartStairs = true;
+        if (!isMining && isOnStairs && isClimbing)
+        {
+            rb.MovePosition(rb.position + new Vector2(-0.64f, 0.64f));
+            isClimbing = false;
+        }
+    }
+    public void OnStartStairsExit()
+    {
+        isOnStartStairs = false;
+    }
     private void Start()
 	{
         rb = GetComponent<Rigidbody2D>();
@@ -59,23 +160,23 @@ public class Player : MonoBehaviour
         else if (!isMining)
         {
             // if player is jumping, horizontal speed will be reduced in 4 times
-            float xSpeed = rb.velocity.y == 0 ? horizontalSpeed : horizontalSpeed / 4f;
+            xSpeed = rb.velocity.y == 0 ? horizontalSpeed : horizontalSpeed / 4f;
 
             // left move (Left Arrow)
             if (Input.GetKey(KeyCode.LeftArrow))
-                rb.AddForce(Vector2.left * xSpeed);
+                OnDownLeft();
             if (Input.GetKeyUp(KeyCode.LeftArrow))
-                rb.velocity = new Vector2(0, rb.velocity.y);
+                OnUpLeft(); ;
 
             // right move (Right Arrow)
             if (Input.GetKey(KeyCode.RightArrow))
-                rb.AddForce(Vector2.right * xSpeed);
+                OnDownRight();
             if (Input.GetKeyUp(KeyCode.RightArrow))
-                rb.velocity = new Vector2(0, rb.velocity.y);
+                OnUpRight();
 
             // jump (Up Arrow)
-            if (Input.GetKeyDown(KeyCode.UpArrow) && rb.velocity.y == 0)
-                rb.AddForce(new Vector2(0, jumpForce));
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                OnDownJump();
         }
 
         // limit velocity
@@ -86,40 +187,17 @@ public class Player : MonoBehaviour
         if (rb.velocity.y < -8f)
             rb.velocity = new Vector2(rb.velocity.x, -8f);
 
-        // mine (Left Click)
-        if (Input.GetKeyDown(KeyCode.P))
+        // mine (Left Click or M)
+        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.M))
             StartCoroutine("Mine");
-        
+
         // automine (Space)
         if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (isMining)
-            {
-                isMining = false;
-                StopCoroutine("AutoMine");
-            }
-            else
-            {
-                isMining = true;
-                isClimbing = false;
-                StartCoroutine("AutoMine");
-            }
-        }
-        
+            OnDownAutomine();
+
         // climbe (C)
         if (Input.GetKeyDown(KeyCode.C))
-        {
-            isClimbing = !isClimbing;
-            if (!isOnStairs && isClimbing)
-            {
-                isClimbing = false;
-            }
-            if (isMining == true)
-            {
-                isMining = false;
-                StopCoroutine("AutoMine");
-            }
-        }
+            OnDownClimb();
         
         // developer mode (D)
         if (Input.GetKeyDown(KeyCode.D))
@@ -232,28 +310,6 @@ public class Player : MonoBehaviour
             StartCoroutine("Mine");
         }
     }
-    public void OnStairsStay()
-	{
-        isOnStairs = true;
-    }
-    public void OnStairsExit()
-	{
-        if (!isMining)
-            isOnStairs = false;
-    }
-    public void OnStartStairsStay()
-    {
-        isOnStartStairs = true;
-        if (!isMining && isOnStairs && isClimbing)
-        {
-            rb.MovePosition(rb.position + new Vector2(-0.64f, 0.64f));
-            isClimbing = false;
-        }
-    }
-    public void OnStartStairsExit()
-    {
-        isOnStartStairs = false;
-    }
     private void LoadData()
     {
         // position
@@ -274,7 +330,7 @@ public class Player : MonoBehaviour
         // isClimbing
         if (PlayerPrefs.HasKey("isClimbing"))
             isClimbing = PlayerPrefs.GetInt("isClimbing") == 1;
-        if (isMining)
+        if (isMining && (isOnStairs || isOnStartStairs))
         {
             isMining = true;
             isClimbing = false;

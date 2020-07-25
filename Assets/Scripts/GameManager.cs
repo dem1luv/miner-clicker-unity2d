@@ -27,12 +27,12 @@ public class GameManager : MonoBehaviour
     private void GenerateWorld()
     {
         // main blocks
-        GenerationBlock grassBlock = new GenerationBlock(1, 1, 1, 1, 30f, 46f, 1, blockColors[0]);
-        GenerationBlock dirtBlock = new GenerationBlock(2, 2, 6, 6, 50f, 82f, 1, blockColors[1]);
-        GenerationBlock sandStripBlock = new GenerationBlock(7, 7, 7, 7, 27f, 36f, 5, blockColors[2]);
-        GenerationBlock dryMudBlock = new GenerationBlock(8, 8, 20, 30, 68f, 92f, 1, blockColors[3]);
-        GenerationBlock sandBlock = new GenerationBlock(20, 31, 50, 62, 20f, 33f, 2, blockColors[4]);
-        GenerationBlock sandStoneBlock = new GenerationBlock(50, 63, 120, 120, 100f, 136f, 3, blockColors[5]);
+        GenerationBlock grassBlock = new GenerationBlock(1, 1, 1, 1, 14f, 21f, 1, blockColors[0]);
+        GenerationBlock dirtBlock = new GenerationBlock(2, 2, 6, 6, 23f, 36f, 1, blockColors[1]);
+        GenerationBlock sandStripBlock = new GenerationBlock(7, 7, 7, 7, 27f, 39f, 5, blockColors[2]);
+        GenerationBlock dryMudBlock = new GenerationBlock(8, 8, 20, 30, 37f, 52f, 1, blockColors[3]);
+        GenerationBlock sandBlock = new GenerationBlock(20, 31, 50, 62, 57f, 83f, 2, blockColors[4]);
+        GenerationBlock sandStoneBlock = new GenerationBlock(50, 63, 120, 120, 80f, 116f, 3, blockColors[5]);
 
         // additional blocks
         GenerationBlock blackEarthBlock = new GenerationBlock(2, 3, 0.05f, 40f, 70f, 5, additBlockColors[0]);
@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     public void OnDeleteAllData()
 	{
         PlayerPrefs.DeleteAll();
+        SaveScript.money = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
