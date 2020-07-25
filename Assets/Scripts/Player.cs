@@ -43,25 +43,6 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         LoadData();
     }
-    private void LoadData()
-	{
-        // position
-        transform.position = Load.GetVec3("player", transform.position);
-
-        // isMining
-        if (PlayerPrefs.HasKey("isMining"))
-            isMining = PlayerPrefs.GetInt("isMining") == 1;
-
-        // isClimbing
-        if (PlayerPrefs.HasKey("isClimbing"))
-            isClimbing = PlayerPrefs.GetInt("isClimbing") == 1;
-        if (isMining)
-        {
-            isMining = true;
-            isClimbing = false;
-            StartCoroutine("AutoMine");
-        }
-    }
     private void Update()
     {
         // get & set depth on UI panel
@@ -273,17 +254,63 @@ public class Player : MonoBehaviour
     {
         isOnStartStairs = false;
     }
+    private void LoadData()
+    {
+        // position
+        transform.position = Load.GetVec3("player", transform.position);
+
+        // isMining
+        if (PlayerPrefs.HasKey("isMining"))
+            isMining = PlayerPrefs.GetInt("isMining") == 1;
+
+        // isOnStairs
+        if (PlayerPrefs.HasKey("isOnStairs"))
+            isOnStairs = PlayerPrefs.GetInt("isOnStairs") == 1;
+
+        // isOnStartStairs
+        if (PlayerPrefs.HasKey("isOnStartStairs"))
+            isOnStartStairs = PlayerPrefs.GetInt("isOnStartStairs") == 1;
+
+        // isClimbing
+        if (PlayerPrefs.HasKey("isClimbing"))
+            isClimbing = PlayerPrefs.GetInt("isClimbing") == 1;
+        if (isMining)
+        {
+            isMining = true;
+            isClimbing = false;
+            StartCoroutine("AutoMine");
+        }
+    }
     private void SaveData()
     {
+        // position
         Save.SetVec3("player", transform.position);
+        
+        // isMining
         if (isMining)
             PlayerPrefs.SetInt("isMining", 1);
         else
             PlayerPrefs.SetInt("isMining", 0);
+
+        // isOnStairs
+        if (isOnStairs)
+            PlayerPrefs.SetInt("isOnStairs", 1);
+        else
+            PlayerPrefs.SetInt("isOnStairs", 0);
+
+        // isOnStartStairs
+        if (isOnStartStairs)
+            PlayerPrefs.SetInt("isOnStartStairs", 1);
+        else
+            PlayerPrefs.SetInt("isOnStartStairs", 0);
+        
+        // isClimbing
         if (isClimbing)
             PlayerPrefs.SetInt("isClimbing", 1);
         else
             PlayerPrefs.SetInt("isClimbing", 0);
+
+        // money
         PlayerPrefs.SetInt("money", SaveScript.money);
     }
 	private void OnApplicationPause(bool pause)

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject chunks;
     [SerializeField] GameObject chunk;
     [SerializeField] Color[] blockColors;
+    [SerializeField] Color[] additBlockColors;
     [Header("UI")]
     [SerializeField] public Text moneyTextPublic;
     public static Text moneyText;
@@ -23,15 +24,25 @@ public class GameManager : MonoBehaviour
         SaveScript.money = PlayerPrefs.GetInt("money");
         UpdateMoney(0);
     }
-
     private void GenerateWorld()
     {
-        GenerationBlock blockClay = new GenerationBlock(2, 6, 0.04f, 16f, 20f, 6, blockColors[0]);
-        GenerationBlock blockCoal = new GenerationBlock(11, 500, 0.02f, 50f, 80f, 30, blockColors[1]);
-        GenerationBlock blockDirt = new GenerationBlock(2, 2, 6, 8, 20f, 24f, 1, blockColors[2]);
-        GenerationBlock blockStone = new GenerationBlock(6, 11, 20000, 20000, 30f, 50f, 1, blockColors[3]);
-        GenerationBlock blockGrass = new GenerationBlock(1, 1, 1, 1, 8f, 15f, 1, blockColors[4]);
-        SaveScript.blocks = new GenerationBlock[] { blockClay, blockCoal, blockStone, blockGrass, blockDirt };
+        // main blocks
+        GenerationBlock grassBlock = new GenerationBlock(1, 1, 1, 1, 30f, 46f, 1, blockColors[0]);
+        GenerationBlock dirtBlock = new GenerationBlock(2, 2, 6, 6, 50f, 82f, 1, blockColors[1]);
+        GenerationBlock sandStripBlock = new GenerationBlock(7, 7, 7, 7, 27f, 36f, 5, blockColors[2]);
+        GenerationBlock dryMudBlock = new GenerationBlock(8, 8, 20, 30, 68f, 92f, 1, blockColors[3]);
+        GenerationBlock sandBlock = new GenerationBlock(20, 31, 50, 62, 20f, 33f, 2, blockColors[4]);
+        GenerationBlock sandStoneBlock = new GenerationBlock(50, 63, 120, 120, 100f, 136f, 3, blockColors[5]);
+
+        // additional blocks
+        GenerationBlock blackEarthBlock = new GenerationBlock(2, 3, 0.05f, 40f, 70f, 5, additBlockColors[0]);
+        GenerationBlock clayBlock = new GenerationBlock(2, 4, 0.1f, 60f, 82f, 6, additBlockColors[1]);
+        GenerationBlock mudBlock = new GenerationBlock(2, 6, 30f, 40f, 2, additBlockColors[2]);
+
+        // plug block
+        GenerationBlock plugBlock = new GenerationBlock(121, int.MaxValue, 1f, 1f, 1f, 0, Color.red);
+
+        SaveScript.blocks = new GenerationBlock[] { blackEarthBlock, clayBlock, mudBlock, grassBlock, dirtBlock, sandStripBlock, dryMudBlock, sandBlock, sandStoneBlock, plugBlock };
     }
     public static bool UpdateMoney(int value)
 	{
