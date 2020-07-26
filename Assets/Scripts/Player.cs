@@ -163,13 +163,13 @@ public class Player : MonoBehaviour
             xSpeed = rb.velocity.y == 0 ? horizontalSpeed : horizontalSpeed / 4f;
 
             // left move (Left Arrow)
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
                 OnDownLeft();
             if (Input.GetKeyUp(KeyCode.LeftArrow))
                 OnUpLeft(); ;
 
             // right move (Right Arrow)
-            if (Input.GetKey(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow))
                 OnDownRight();
             if (Input.GetKeyUp(KeyCode.RightArrow))
                 OnUpRight();
